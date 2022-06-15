@@ -5,3 +5,7 @@ const itemCreateDtoInType = shape({
     text: string(1,1000).isRequired(),
     highPriority: boolean()
   });
+
+  const itemGetDtoInType = shape({
+    id: id().isRequired()
+  });

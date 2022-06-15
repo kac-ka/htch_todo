@@ -28,6 +28,32 @@ const Create = {
   }
 };
 
+const Get = {
+  UC_CODE: `${ITEM_ERROR_PREFIX}get/`,
+  InvalidDtoIn: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Create.UC_CODE}invalidDtoIn`;
+      this.message = "DtoIn is not valid.";
+    }
+  },
+  ItemDoesNotExist: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Create.UC_CODE}itemDoesNotExist`;
+      this.message = "Item with given id does not exist.";
+    }
+  },
+  ItemDaoGetFailed: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Create.UC_CODE}itemDaoGetFailed`;
+      this.message = "Selecting item by item DAO get failed.";
+    }
+  }
+};
+
 module.exports = {
+  Get,
   Create
 };

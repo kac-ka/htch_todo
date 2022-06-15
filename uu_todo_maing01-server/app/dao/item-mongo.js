@@ -10,6 +10,10 @@ class ItemMongo extends UuObjectDao {
     return await super.insertOne(item);
   }
 
+  async getItem(itemId){
+    return await super.find({id: `${itemId}`});
+  }
+
 }
 
 module.exports = ItemMongo;

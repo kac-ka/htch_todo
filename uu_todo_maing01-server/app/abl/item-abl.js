@@ -9,6 +9,9 @@ const WARNINGS = {
   createUnsupportedKeys: {
     code: `${Errors.Create.UC_CODE}unsupportedKeys`
   },
+  getUnsupportedKeys: {
+    code: `${Errors.Create.UC_CODE}unsupportedKeys`
+  }
 };
 const EXECUTIVES_PROFILE = "Authorities";
 
@@ -21,6 +24,46 @@ class ItemAbl {
 
     this.daoList = DaoFactory.getDao("list");
     this.daoList.createSchema();
+  }
+
+  async get(awid, dtoIn, session, authorizationResult) {
+    //HDS 1, 1.1
+    let validationResult = this.validator.validate("itemGetDtoInType", dtoIn);
+    //1.2, 1.3
+    let uuAppErrorMap = ValidationHelper.processValidationResult(
+      dtoIn, 
+      validationResult,
+      WARNINGS.getUnsupportedKeys.code, 
+      Errors.Get.InvalidDtoIn
+      );
+
+    //Authorization
+    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+
+    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+    dtoIn.uuIdentityName = session.getIdentity().getName(); 
+
+    let dtoOut;
+    try {
+      dtoOut = await this.dao.getItem(dtoIn.id);
+      if (dtoOut.itemList.length === 0){
+        //return new Errors.Create.ListDoesNotExist({uuAppErrorMap});
+        return uuAppErrorMap[Errors.Get.ItemDoesNotExist.code] = {
+          id: dtoIn.id,
+          timestamp: (new Date()).toISOString(),
+            type: "error",
+            message: "Item with given id does not exist."
+        }
+      }
+    } catch (e) {
+      if (e instanceof ObjectStoreError) {
+        throw new Errors.Get.ItemDaoGetFailed({uuAppErrorMap}, e);
+      }
+    }
+    
+    //HDS 5
+    dtoOut.uuAppErrorMap = uuAppErrorMap;
+    return dtoOut;
   }
 
   async create(awid, dtoIn, session, authorizationResult) {

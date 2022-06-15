@@ -28,6 +28,14 @@
       "list/update": {
         "sysStateList": ["active"],
         "profileList": ["Authorities","Executives"]
+      },
+      "list/delete": {
+        "sysStateList": ["active"],
+        "profileList": ["Authorities","Executives"]
+      },
+      "list/list": {
+        "sysStateList": ["active"],
+        "profileList": ["Authorities","Executives","Readers"]
       }
     }
   }

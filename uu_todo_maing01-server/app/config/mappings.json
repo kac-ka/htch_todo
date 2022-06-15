@@ -30,6 +30,16 @@
         "realization": "api/controllers/ListController.update",
         "httpMethod": "POST",
         "type": "CMD"
+      },
+      "list/delete": {
+        "realization": "api/controllers/ListController.delete",
+        "httpMethod": "POST",
+        "type": "CMD"
+      },
+      "list/list": {
+        "realization": "api/controllers/ListController.list",
+        "httpMethod": "GET",
+        "type": "CMD"
       }
     }
   }

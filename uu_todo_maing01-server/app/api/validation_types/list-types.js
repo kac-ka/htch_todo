@@ -15,3 +15,13 @@ const toDoCreateList = shape({
     description: uu5String(4000),
     deadline: date()
   });
+
+  const toDoDeleteList = shape({
+    id: id().isRequired(),
+    forceDelete: boolean()
+  });
+
+  const listListDtoInType = shape({
+      pageIndex: integer(),
+      pageSize: integer()
+  });

@@ -120,7 +120,60 @@ const Update = {
   }
 };
 
+const Delete = {
+  UC_CODE: `${LIST_ERROR_PREFIX}delete/`,
+  InvalidDtoIn: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Delete.UC_CODE}invalidDtoIn`;
+      this.message = "DtoIn is not valid.";
+    }
+  }, 
+  TodoInstanceDoesNotExist: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Delete.UC_CODE}todoInstanceDoesNotExist`;
+      this.message = "TodoInstance does not exist.";
+    }
+  },
+  TodoInstanceIsNotInProperState: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Delete.UC_CODE}todoInstanceIsNotInProperState`;
+      this.message = "The application is not in proper state.";
+    }
+  },
+  ListContainsActiveItems: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Delete.UC_CODE}listContainsActiveItems`;
+      this.message = "List with active items can not be deleted.";
+    }
+  }
+  
+};
+
+const List = {
+  UC_CODE: `${LIST_ERROR_PREFIX}list/`,
+  InvalidDtoIn: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${List.UC_CODE}invalidDtoIn`;
+      this.message = "DtoIn is not valid.";
+    }
+  },
+  ListDaoListFailed: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${List.UC_CODE}listDaoListFailed`;
+      this.message = "Listing list by list DAO list failed.";
+    }
+  }
+};
+
 module.exports = {
+  List,
+  Delete,
   Update,
   Get,
   Create

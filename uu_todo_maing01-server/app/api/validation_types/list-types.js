@@ -4,3 +4,7 @@ const toDoCreateList = shape({
     description: uu5String(4000),
     deadline: date()
   });
+
+  const toDoGetList = shape({
+    name: id().isRequired()
+  });

@@ -10,6 +10,10 @@ class ListMongo extends UuObjectDao {
   async createList(list) {
     return await super.insertOne(list);
   }
+
+  async getListById(listId) {
+    return await super.find({_id: `${listId}`});
+  }
 }
 
 module.exports = ListMongo;

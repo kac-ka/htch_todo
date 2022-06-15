@@ -17,17 +17,19 @@ beforeEach(async () => {
   describe("List/create_tests", () => {
     expect.assertions(5);
     test("HDS1"), async () =>{
-        let session = await TestHelper.login("ExecutiveUser");
-        let dtoIn = { 
+        let session = await TestHelper.login("AllUser");
+        let dbList = {
             name: "Test name",
-            description: "Some list for toDo something",
-            deadline: "2022-07-16"
+        }
+        let dbResult = await TestHelper.executePostCommand("list/create", dbList, session);
+        let dtoIn = { 
+            id: dbResult.id
     };
-    let result = await TestHelper.executePostCommand("list/create", dtoIn , session);
+    let result = await TestHelper.executeGetCommand("list/get", dtoIn , session);
     expect(result.status).toEqual(200);
-    expect(result.data.name).toEqual(dtoIn.name);
-    expect(result.data.description).toEqual(dtoIn.text);
-    expect(result.data.deadline).toEqual(dtoIn.deadline);
-    expect(result.data.uuAppErrorMap).toEqual({});
+    expect(result.name).toEqual(dtoIn.name);
+    // expect(result.description).toBeFalsy();
+    // expect(result.deadline).toBeFalsy();
+    expect(result.uuAppErrorMap).toEqual({});
     }
   })

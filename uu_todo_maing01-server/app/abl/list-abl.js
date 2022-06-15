@@ -9,6 +9,9 @@ const Errors = require("../api/errors/list-error.js");
 const WARNINGS = {
   createUnsupportedKeys: {
     code: `${Errors.Create.UC_CODE}unsupportedKeys`
+  },
+  getUnsupportedKeys: {
+    code: `${Errors.Get.UC_CODE}unsupportedKeys`
   }
 };
 
@@ -21,16 +24,59 @@ class ListAbl {
     this.dao = DaoFactory.getDao("list");
   }
 
+  async get(awid, dtoIn, session, authorizationResult) {
+  //HDS 1, 1.1
+  let validationResult = this.validator.validate("toDoGetList", dtoIn);
+  //1.2, 1.3
+  let uuAppErrorMap = ValidationHelper.processValidationResult(
+    dtoIn, 
+    validationResult,
+    WARNINGS.getUnsupportedKeys.code, 
+    Errors.Get.InvalidDtoIn
+    );
+
+  //Authorization
+  dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+
+  dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+  dtoIn.uuIdentityName = session.getIdentity().getName(); 
+
+  //HDS 2
+  //TODO
+
+  //HDS 3
+  let dtoOut;
+  try {
+    dtoOut = await this.dao.getListById(dtoIn.id);
+    if(dtoOut.itemList.length === 0) {
+      uuAppErrorMap[Errors.Get.ListDoesNotExist.code] = {
+        id: dtoIn.id,
+        timestamp: (new Date()).toISOString(),
+          type: "error",
+          message: "List with given id does not exist."
+      }
+    }
+  } catch (e){
+    if (e instanceof ObjectStoreError) {
+      throw new Errors.Get.ListDaoGetFailed({uuAppErrorMap}, e);
+    }
+    throw e;
+  }
+  //HDS 4
+  dtoOut.uuAppErrorMap = uuAppErrorMap;
+  return dtoOut;
+  }
+
   async create(awid, dtoIn, session, authorizationResult) {
-     //HDS 1, 1.1
-     let validationResult = this.validator.validate("toDoCreateList", dtoIn);
-     //1.2, 1.3
-     let uuAppErrorMap = ValidationHelper.processValidationResult(
-       dtoIn, 
-       validationResult,
-       WARNINGS.createUnsupportedKeys.code, 
-       Errors.Create.InvalidDtoIn
-       );
+    //HDS 1, 1.1
+    let validationResult = this.validator.validate("toDoCreateList", dtoIn);
+    //1.2, 1.3
+    let uuAppErrorMap = ValidationHelper.processValidationResult(
+      dtoIn, 
+      validationResult,
+      WARNINGS.createUnsupportedKeys.code, 
+      Errors.Create.InvalidDtoIn
+      );
 
     //Authorization
     dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
@@ -45,7 +91,7 @@ class ListAbl {
     let dateIn = new Date(dtoIn.deadline);
     let dateMilliseconds = dateIn.getTime();
     if(dateMilliseconds < Date.now()) {
-      throw new Errors.Create.deadlineDateIsFromThePast({uuAppErrorMap});
+      throw new Errors.Create.DeadlineDateIsFromThePast({uuAppErrorMap});
     }
 
     //HDS 4
@@ -55,7 +101,7 @@ class ListAbl {
       dtoOut = await this.dao.createList(dtoIn);
     } catch (e) {
       if (e instanceof ObjectStoreError) {
-        throw new Errors.Create.listDaoCreateFailed({uuAppErrorMap}, e);
+        throw new Errors.Create.ListDaoCreateFailed({uuAppErrorMap}, e);
       }
     }
 
@@ -63,7 +109,6 @@ class ListAbl {
     dtoOut.uuAppErrorMap = uuAppErrorMap;
     return dtoOut;
   }
-
 }
 
 module.exports = new ListAbl();

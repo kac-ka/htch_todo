@@ -36,6 +36,10 @@
       "list/list": {
         "sysStateList": ["active"],
         "profileList": ["Authorities","Executives","Readers"]
+      },
+      "item/create": {
+        "sysStateList": ["active"],
+        "profileList": ["Authorities","Executives"]
       }
     }
   }

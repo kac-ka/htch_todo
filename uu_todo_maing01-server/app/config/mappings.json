@@ -40,6 +40,11 @@
         "realization": "api/controllers/ListController.list",
         "httpMethod": "GET",
         "type": "CMD"
+      },
+      "item/create": {
+        "realization": "api/controllers/ItemController.create",
+        "httpMethod": "POST",
+        "type": "CMD"
       }
     }
   }

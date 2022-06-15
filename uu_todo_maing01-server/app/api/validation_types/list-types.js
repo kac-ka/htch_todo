@@ -6,5 +6,12 @@ const toDoCreateList = shape({
   });
 
   const toDoGetList = shape({
-    name: id().isRequired()
+    id: id().isRequired()
+  });
+
+  const toDoUpdateList = shape({
+    id: id().isRequired(),
+    name: string(1, 30).isRequired(),
+    description: uu5String(4000),
+    deadline: date()
   });

@@ -9,3 +9,19 @@ const itemCreateDtoInType = shape({
   const itemGetDtoInType = shape({
     id: id().isRequired()
   });
+
+  const itemUpdateDtoInType = shape({
+    id: id().isRequired(),
+    listId: id(),
+    text: string(1,1000),
+    highPriority: boolean()
+  });
+
+  const itemDeleteDtoInType = shape({
+    id: id().isRequired()
+  });
+
+  const itemSetFinalStateDtoInType = shape({
+    id: id().isRequired(),
+    state: oneOf(["completed", "cancelled"]).isRequired()
+  });

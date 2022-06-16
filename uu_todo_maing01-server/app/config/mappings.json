@@ -50,6 +50,21 @@
         "realization": "api/controllers/ItemController.get",
         "httpMethod": "GET",
         "type": "CMD"
+      },
+      "item/update": {
+        "realization": "api/controllers/ItemController.update",
+        "httpMethod": "POST",
+        "type": "CMD"
+      },
+      "item/delete": {
+        "realization": "api/controllers/ItemController.delete",
+        "httpMethod": "POST",
+        "type": "CMD"
+      },
+      "item/setFinalState": {
+        "realization": "api/controllers/ItemController.setFinalState",
+        "httpMethod": "POST",
+        "type": "CMD"
       }
     }
   }

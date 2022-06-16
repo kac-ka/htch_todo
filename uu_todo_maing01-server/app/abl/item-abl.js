@@ -16,10 +16,16 @@ const WARNINGS = {
     code: `${Errors.Update.UC_CODE}unsupportedKeys`
   },
   deleteUnsupportedKeys: {
-    code: `${Errors.Update.UC_CODE}unsupportedKeys`
+    code: `${Errors.Delete.UC_CODE}unsupportedKeys`
+  },
+  deleteItemDoesNotExist: {
+    code: `${Errors.Delete.UC_CODE}itemDoesNotExist`
   },
   listDoesNotExist: {
     code: `${Errors.Delete.UC_CODE}listDoesNotExist`
+  },
+  setFinalStateUnsupportedKeys: {
+    code: `${Errors.SetFinalState.UC_CODE}unsupportedKeys`
   }
 };
 const EXECUTIVES_PROFILE = "Authorities";
@@ -33,6 +39,59 @@ class ItemAbl {
 
     this.daoList = DaoFactory.getDao("list");
     this.daoList.createSchema();
+  }
+
+  async setFinalState(awid, dtoIn, session, authorizationResult) {
+    //HDS 1, 1.1
+    let validationResult = this.validator.validate("itemSetFinalStateDtoInType", dtoIn);
+    //1.2, 1.3
+    let uuAppErrorMap = ValidationHelper.processValidationResult(
+      dtoIn, 
+      validationResult,
+      WARNINGS.setFinalStateUnsupportedKeys.code, 
+      Errors.SetFinalState.InvalidDtoIn
+      );
+
+    //Authorization
+    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+
+    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+    dtoIn.uuIdentityName = session.getIdentity().getName();
+    
+    let dtoOut;
+    try {
+      let tmpItem;
+      try {
+        tmpItem = await this.dao.getItem(dtoIn.id);
+      } catch (error) {
+        if (e instanceof ObjectStoreError) {
+          throw new Errors.Get.ItemDaoGetFailed({uuAppErrorMap}, e);
+        }
+      throw e;
+      }
+      if(tmpItem.itemList.length === 0) {
+        uuAppErrorMap[Errors.SetFinalState.ItemDoesNotExist.code] = {
+          id: dtoIn.id,
+            type: "error",
+            message: "Item with given id does not exist."
+          }
+        } else {
+          if (tmpItem.itemList[0].state && tmpItem.itemList[0].state === "active"){
+            dtoOut = await this.dao.SetItemFinalState(dtoIn.id, dtoIn.state);
+          } else {
+            throw new Errors.SetFinalState.ItemIsNotInProperState({uuAppErrorMap});
+          }
+        }
+    } catch (e) {
+      if (e instanceof ObjectStoreError) {
+          throw new Errors.SetFinalState.ItemDaoSetFinalStateFailed({uuAppErrorMap}, e);
+        }
+      throw e;
+    }
+
+     //HDS 5
+     dtoOut.uuAppErrorMap = uuAppErrorMap;
+     return dtoOut;
   }
 
   async delete(awid, dtoIn, session, authorizationResult) {
@@ -53,20 +112,21 @@ class ItemAbl {
      dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
      //HDS 3
+     let dtoOut;
     try {
-      dtoOut = await this.dao.getListById(dtoIn.id);
+      dtoOut = await this.dao.getItem(dtoIn.id);
       if(dtoOut.itemList.length === 0) {
-        uuAppErrorMap[WARNINGS.listDoesNotExist.code] = {
+        uuAppErrorMap[WARNINGS.deleteItemDoesNotExist.code] = {
           id: dtoIn.id,
             type: "warning",
-            message: "List with given id does not exist."
+            message: "Item with given id does not exist."
           }
         } 
     } catch (e) {
       if (e instanceof ObjectStoreError) {
           throw new Errors.Delete.ItemDaoDeleteFailed({uuAppErrorMap}, e);
         }
-        throw e;
+      throw e;
     }
 
      //HDS 5

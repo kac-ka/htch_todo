@@ -21,7 +21,7 @@ const WARNINGS = {
     code: `${Errors.Update.UC_CODE}unsupportedKeys`
   },
   listDoesNotExist: {
-    code: `${Errors.Update.UC_CODE}listDoesNotExist`
+    code: `${Errors.Delete.UC_CODE}listDoesNotExist`
   }
 };
 
@@ -143,7 +143,7 @@ class ListAbl {
     try {
       let tmpList = await this.dao.getListById(dtoIn.id);
       if(tmpList.itemList.length === 0) {
-        uuAppErrorMap[Errors.Get.ListDoesNotExist.code] = {
+        uuAppErrorMap[Errors.Update.ListDoesNotExist.code] = {
           id: dtoIn.id,
           timestamp: (new Date()).toISOString(),
           type: "error",

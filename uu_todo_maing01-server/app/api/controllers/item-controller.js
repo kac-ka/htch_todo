@@ -3,6 +3,18 @@ const ItemAbl = require("../../abl/item-abl.js");
 
 class ItemController {
 
+  setFinalState(ucEnv) {
+    return ItemAbl.setFinalState(ucEnv.getUri().getAwid(), ucEnv.getDtoIn(), ucEnv.getSession(), ucEnv.getAuthorizationResult());
+  }
+
+  delete(ucEnv) {
+    return ItemAbl.delete(ucEnv.getUri().getAwid(), ucEnv.getDtoIn(), ucEnv.getSession(), ucEnv.getAuthorizationResult());
+  }
+
+  update(ucEnv) {
+    return ItemAbl.update(ucEnv.getUri().getAwid(), ucEnv.getDtoIn(), ucEnv.getSession(), ucEnv.getAuthorizationResult());
+  }
+
   get(ucEnv) {
     return ItemAbl.get(ucEnv.getUri().getAwid(), ucEnv.getDtoIn(), ucEnv.getSession(), ucEnv.getAuthorizationResult());
   }

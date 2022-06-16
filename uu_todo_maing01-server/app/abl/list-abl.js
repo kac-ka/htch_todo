@@ -55,14 +55,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else {
-    //   if (todoInstance.state !== "active"){ //HDS 2.1.2
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else {
+      if (todoInstance.state !== "active"){ //HDS 2.1.2
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     dtoIn.awid = awid;
@@ -100,14 +100,14 @@ class ListAbl {
 
 
     //HDS2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     dtoIn.awid = awid;
@@ -166,14 +166,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dateIn = new Date(dtoIn.deadline);
@@ -230,14 +230,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else {
-    //   if (todoInstance.state !== "active"){ //HDS 2.1.2
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else {
+      if (todoInstance.state !== "active"){ //HDS 2.1.2
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dtoOut;
@@ -277,14 +277,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let instanceTodo = await this.instanceDao.getByAwid(awid);
-    // if(!instanceTodo){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (instanceTodo.state !== "active"){
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let instanceTodo = await this.instanceDao.getByAwid(awid);
+    if(!instanceTodo){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (instanceTodo.state !== "active"){
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dateIn = new Date(dtoIn.deadline);

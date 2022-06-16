@@ -62,14 +62,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.List.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.List.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.List.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.List.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dtoOut = {};
@@ -112,14 +112,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.SetFinalState.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.SetFinalState.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.SetFinalState.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.SetFinalState.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
     
     //HDS 3, 4
     let dtoOut;
@@ -171,14 +171,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Delete.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Delete.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Delete.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Delete.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dtoOut = {};
@@ -236,14 +236,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Update.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Update.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Update.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Update.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let tmpItem = await this.dao.getItem(awid,dtoIn.id);
@@ -311,14 +311,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName();
     
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Get.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Get.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Get.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Get.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     let dtoOut;
@@ -350,14 +350,14 @@ class ItemAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    // let todoInstance = await this.instanceDao.getByAwid(awid);
-    // if(!todoInstance){ //HDS 2.1.1
-    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    // }else { //HDS 2.1.2
-    //   if (todoInstance.state !== "active"){
-    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-    //   }
-    // }
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
 
     //HDS 3
     dtoIn.state = "active";

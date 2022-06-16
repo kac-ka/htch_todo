@@ -55,14 +55,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS2
-    let todoInstance = await this.instanceDao.getByAwid(awid);
-    if(!todoInstance){ //HDS 2.1.1
-      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    }else {
-      if (todoInstance.state !== "active"){ //HDS 2.1.2
-        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-      }
-    }
+    // let todoInstance = await this.instanceDao.getByAwid(awid);
+    // if(!todoInstance){ //HDS 2.1.1
+    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    // }else {
+    //   if (todoInstance.state !== "active"){ //HDS 2.1.2
+    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //   }
+    // }
 
     //HDS 3
     dtoIn.awid = awid;
@@ -100,48 +100,48 @@ class ListAbl {
 
 
     //HDS2
-    let todoInstance = await this.instanceDao.getByAwid(awid);
-    if(!todoInstance){ //HDS 2.1.1
-      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    }else { //HDS 2.1.2
-      if (todoInstance.state !== "active"){
-        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-      }
-    }
+    // let todoInstance = await this.instanceDao.getByAwid(awid);
+    // if(!todoInstance){ //HDS 2.1.1
+    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    // }else { //HDS 2.1.2
+    //   if (todoInstance.state !== "active"){
+    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //   }
+    // }
 
     //HDS 3
     dtoIn.awid = awid;
-    let dtoOut;
-    try {
-      dtoOut = await this.dao.getListById(awid, dtoIn.id);
-      if(dtoOut.itemList.length === 0) {
-        ValidationHelper.addWarning(
-          uuAppErrorMap,
-          WARNINGS.Delete.listDoesNotExist.code,
-          WARNINGS.Delete.listDoesNotExist.message,
-          {id: dtoIn.id}
-        );
-      }
-    } catch (e){
-      if (e instanceof ObjectStoreError) {
-        throw new Errors.Get.ListDaoGetFailed({uuAppErrorMap}, e);
-      }
-      throw e;
+    let dtoOut={};
+    let tmpList = await this.dao.getListById(awid, dtoIn.id);
+    if(!tmpList) {
+      ValidationHelper.addWarning(
+        uuAppErrorMap,
+        WARNINGS.listDoesNotExist.code,
+        WARNINGS.listDoesNotExist.message,
+        {id: dtoIn.id}
+      );
     }
 
     //HDS 4
     if(!dtoIn.forceDelete) {
-      let tmpList = await this.dao.listByListAndState(awid, dtoIn.id, "active");
+      let tmpList = await this.itemDao.listByListAndState(awid, dtoIn.id, "active");
       if(tmpList.itemList.length > 0) { //HDS 4.1
-        throw new Errors.Delete.ListContainsActiveItems({uuAppErrorMap}, {id: dtoIn.id, itemList: item.itemList});
+        throw new Errors.Delete.ListContainsActiveItems(uuAppErrorMap, {id: dtoIn.id, itemList: tmpList.itemList});
       }
     }
     
-    //HDS 5
-    await this.itemDao.deleteManyByListId(awid, dtoIn.id);
+    try{
+      //HDS 5
+      await this.itemDao.deleteManyByListId(awid, dtoIn.id);
 
-    //HDS 6
-    await this.dao.deleteList(awid, dtoIn.id);
+      //HDS 6
+      await this.dao.deleteList(awid, dtoIn.id);
+    }catch{
+      if (e instanceof ObjectStoreError) {
+        throw new Errors.Delete.ListDaoDeleteFailed({uuAppErrorMap}, e);
+      }
+    throw e;
+    }
     
      //HDS 7
      dtoOut.uuAppErrorMap = uuAppErrorMap;
@@ -166,14 +166,14 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    let todoInstance = await this.instanceDao.getByAwid(awid);
-    if(!todoInstance){ //HDS 2.1.1
-      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    }else { //HDS 2.1.2
-      if (todoInstance.state !== "active"){
-        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-      }
-    }
+    // let todoInstance = await this.instanceDao.getByAwid(awid);
+    // if(!todoInstance){ //HDS 2.1.1
+    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    // }else { //HDS 2.1.2
+    //   if (todoInstance.state !== "active"){
+    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //   }
+    // }
 
     //HDS 3
     let dateIn = new Date(dtoIn.deadline);
@@ -187,8 +187,8 @@ class ListAbl {
     let dtoOut;
     try { //HDS 4.1
       let tmpList = await this.dao.getListById(awid, dtoIn.id);
-      if(tmpList.itemList.length === 0) {
-        throw new Errors.Update.ListDoesNotExist(uuAppErrorMap);
+      if(!tmpList) {
+        throw new Errors.Update.ListDoesNotExist(uuAppErrorMap, {id: dtoIn.id});
       } else { //HDS 4.1.A
         if(dtoIn.name) {
           dtoOut = await this.dao.updateListName(awid, dtoIn.id, dtoIn.name);
@@ -202,8 +202,9 @@ class ListAbl {
       }
     } catch (e) { //HDS 4.1.B
       if (e instanceof ObjectStoreError) {
-        throw new Errors.Update.ListDaoUpdateFailed({uuAppErrorMap}, e);
+        throw new Errors.Update.ListDaoUpdateFailed(uuAppErrorMap, e);
       }
+      throw e;
     }
 
     //HDS 5
@@ -222,40 +223,40 @@ class ListAbl {
     Errors.Get.InvalidDtoIn
     );
 
-  //Authorization
-  dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+    //Authorization
+    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
 
-  dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-  dtoIn.uuIdentityName = session.getIdentity().getName(); 
+    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
-  //HDS 2
-  let todoInstance = await this.instanceDao.getByAwid(awid);
-    if(!todoInstance){ //HDS 2.1.1
-      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    }else {
-      if (todoInstance.state !== "active"){ //HDS 2.1.2
-        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //HDS 2
+    // let todoInstance = await this.instanceDao.getByAwid(awid);
+    // if(!todoInstance){ //HDS 2.1.1
+    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    // }else {
+    //   if (todoInstance.state !== "active"){ //HDS 2.1.2
+    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //   }
+    // }
+
+    //HDS 3
+    let dtoOut;
+    dtoIn.awid = awid;
+    try {
+      dtoOut = await this.dao.getListById(awid, dtoIn.id);
+      if(!dtoOut) {
+        throw new Errors.Get.ListDoesNotExist({uuAppErrorMap}, {id: dtoIn.id});
       }
+    } catch (e){
+      if (e instanceof ObjectStoreError) {
+        throw new Errors.Get.ListDaoGetFailed({uuAppErrorMap}, e);
+      }
+      throw e;
     }
 
-  //HDS 3
-  let dtoOut;
-  dtoIn.awid = awid;
-  try {
-    dtoOut = await this.dao.getListById(awid, dtoIn.id);
-    if(dtoOut.itemList.length === 0) {
-      throw new Errors.Get.ListDoesNotExist({uuAppErrorMap}, {id: dtoIn.id});
-    }
-  } catch (e){
-    if (e instanceof ObjectStoreError) {
-      throw new Errors.Get.ListDaoGetFailed({uuAppErrorMap}, e);
-    }
-    throw e;
-  }
-
-  //HDS 4
-  dtoOut.uuAppErrorMap = uuAppErrorMap;
-  return dtoOut;
+    //HDS 4
+    dtoOut.uuAppErrorMap = uuAppErrorMap;
+    return dtoOut;
   }
 
   async create(awid, dtoIn, session, authorizationResult) {
@@ -276,30 +277,30 @@ class ListAbl {
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
-    let instanceTodo = await this.instanceDao.getByAwid(awid);
-    if(!instanceTodo){ //HDS 2.1.1
-      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
-    }else { //HDS 2.1.2
-      if (instanceTodo.state !== "active"){
-        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
-      }
-    }
+    // let instanceTodo = await this.instanceDao.getByAwid(awid);
+    // if(!instanceTodo){ //HDS 2.1.1
+    //   throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    // }else { //HDS 2.1.2
+    //   if (instanceTodo.state !== "active"){
+    //     throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+    //   }
+    // }
 
     //HDS 3
     let dateIn = new Date(dtoIn.deadline);
     let dateMilliseconds = dateIn.getTime();
     if(dateMilliseconds < Date.now()) { //HDS 3.1
-      throw new Errors.Create.DeadlineDateIsFromThePast({uuAppErrorMap}, {deadline: dtoIn.deadline});
+      throw new Errors.Create.DeadlineDateIsFromThePast(uuAppErrorMap, {deadline: dtoIn.deadline});
     }
 
     //HDS 4
     dtoIn.awid = awid;
     let dtoOut;
     try { //HDS 4.1.A
-      dtoOut = await this.dao.createList(awid, dtoIn);
+      dtoOut = await this.dao.createList(dtoIn);
     } catch (e) { //HDS 4.1.B
       if (e instanceof ObjectStoreError) {
-        throw new Errors.Create.ListDaoCreateFailed({uuAppErrorMap}, e);
+        throw new Errors.Create.ListDaoCreateFailed(uuAppErrorMap, e);
       }
     }
 

@@ -8,12 +8,12 @@ class ListMongo extends UuObjectDao {
     await super.createIndex({ awid: 1, visibility: 1 });
   }
 
-  async createList(awid, list) {
-    return await super.insertOne(awid, list);
+  async createList(list) {
+    return await super.insertOne(list);
   }
 
   async getListById(awid, listId) {
-    return await super.find({awid: `${awid}`, _id: `${listId}`});
+    return await super.findOne({awid: `${awid}`, _id: `${listId}`});
   }
 
   async updateListName(awid, id, name) {
@@ -36,13 +36,6 @@ class ListMongo extends UuObjectDao {
     return await super.find({awid, visibility}, pageInfo);
   }
 
-  async listByListAndState(awid, listId, state) {
-    return await super.find({awid, listId, state});
-  }
-
-  async deleteManyByListId (awid, listId) {
-    return await super.deleteMany({awid, listId});
-  }
 }
 
 module.exports = ListMongo;

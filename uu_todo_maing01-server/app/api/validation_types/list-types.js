@@ -11,7 +11,7 @@ const toDoCreateList = shape({
 
   const toDoUpdateList = shape({
     id: id().isRequired(),
-    name: string(1, 30).isRequired(),
+    name: string(1, 30),
     description: uu5String(),
     deadline: date()
   });

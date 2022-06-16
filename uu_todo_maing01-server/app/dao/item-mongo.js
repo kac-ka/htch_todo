@@ -13,11 +13,14 @@ class ItemMongo extends UuObjectDao {
   }
 
   async getItem(awid, itemId){
-    return await super.find({awid: `${awid}`, id: `${itemId}`});
+    return await super.findOne({awid: `${awid}`, id: `${itemId}`});
   }
 
   async deleteItemById(awid, itemId){
     return await super.deleteOne({awid: `${awid}`, _id: `${itemId}`});
+  }
+  async deleteManyByListId (awid, listId) {
+    return await super.deleteMany({awid, listId});
   }
 
   async updateItemListId(awid, id, listId) {
@@ -34,17 +37,21 @@ class ItemMongo extends UuObjectDao {
     return await super.findOneAndUpdate({awid: `${awid}`, _id: `${id}`}, {$set : {"state": state}}, {upsert: true});
   }
 
-  async listItemByListIdAndState(awid, listId,state){
-    return await super.find({awid: `${awid}`, id: `${listId}`, state: `${state}`});
+  async listItemByListIdAndState(awid, listId, state, pageInfo = { pageIndex: 0, pageSize: 1000 }){
+    return await super.find({awid: `${awid}`, id: `${listId}`, state: `${state}`}, pageInfo);
   }
-  async listItemByListId(awid, listId){
-    return await super.find({awid: `${awid}`, id: `${listId}`, state: `${state}`});
+  async listItemByListId(awid, listId, pageInfo = { pageIndex: 0, pageSize: 1000 }){
+    return await super.find({awid: `${awid}`, id: `${listId}`}, pageInfo);
   }
-  async listItemByState(awid, state){
-    return await super.find({awid: `${awid}`, id: `${listId}`, state: `${state}`});
+  async listItemByState(awid, state, pageInfo = { pageIndex: 0, pageSize: 1000 }){
+    return await super.find({awid: `${awid}`, state: `${state}`}, pageInfo);
   }
-  async listItemAll(awid){
-    return await super.find({awid});
+  async listItemAll(awid, pageInfo = { pageIndex: 0, pageSize: 1000 }){
+    return await super.find({awid}, pageInfo);
+  }
+
+  async listByListAndState(awid, listId, state) {
+    return await super.find({awid, listId, state});
   }
 
 }

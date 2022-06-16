@@ -97,6 +97,13 @@ const Update = {
       this.message = "Updating list by list DAO update failed.";
     }
   },
+  ListDoesNotExist: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Update.UC_CODE}listDoesNotExist`;
+      this.message = "list with given id does not exist";
+    }
+  },
   DeadlineDateIsFromThePast: class extends TodoMainUseCaseError {
     constructor() {
       super(...arguments);
@@ -148,6 +155,13 @@ const Delete = {
       super(...arguments);
       this.code = `${Delete.UC_CODE}listContainsActiveItems`;
       this.message = "List with active items can not be deleted.";
+    }
+  },
+  ListDaoDeleteFailed: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${List.UC_CODE}listDaoDeleteFailed`;
+      this.message = "Deleting list by list DAO delete failed.";
     }
   }
   

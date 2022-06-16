@@ -15,19 +15,20 @@ beforeEach(async () => {
   });
 
   describe("List/create_tests", () => {
-    expect.assertions(5);
-    test("HDS1"), async () =>{
-        let session = await TestHelper.login("ExecutiveUser");
-        let dtoIn = { 
-            name: "Test name",
-            description: "Some list for toDo something",
-            deadline: "2022-07-16"
-    };
-    let result = await TestHelper.executePostCommand("list/create", dtoIn , session);
-    expect(result.status).toEqual(200);
-    expect(result.data.name).toEqual(dtoIn.name);
-    expect(result.data.description).toEqual(dtoIn.text);
-    expect(result.data.deadline).toEqual(dtoIn.deadline);
-    expect(result.data.uuAppErrorMap).toEqual({});
-    }
-  })
+    //expect.assertions(6);
+    test("HDS1", async () =>{
+      let session = await TestHelper.login("ExecutiveUser");
+      let dtoIn = { 
+          "name": "Test name",
+          "description": "Some list for toDo something",
+          "deadline": "2022-07-16"
+      };
+      let result = await TestHelper.executePostCommand("list/create", dtoIn , session);
+      expect(result.data.status).toEqual(200);
+      expect(result.data.name).toEqual(dtoIn.name);
+      expect(result.data.description).toEqual(dtoIn.description);
+      expect(result.data.deadline).toEqual(dtoIn.deadline);
+      expect(result.data.visibility).toBeTruthy();
+      expect(result.data.uuAppErrorMap).toEqual({});
+    });
+  });

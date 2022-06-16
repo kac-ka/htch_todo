@@ -14,9 +14,9 @@ beforeEach(async () => {
     await TestHelper.teardown();
   });
 
-  describe("List/create_tests", () => {
-    expect.assertions(5);
-    test("HDS1"), async () =>{
+  describe("List/get_tests", () => {
+    //expect.assertions(4);
+    test("HDS1", async () =>{
         let session = await TestHelper.login("AllUser");
         let dbList = {
             name: "Test name",
@@ -27,9 +27,8 @@ beforeEach(async () => {
     };
     let result = await TestHelper.executeGetCommand("list/get", dtoIn , session);
     expect(result.status).toEqual(200);
-    expect(result.name).toEqual(dtoIn.name);
-    // expect(result.description).toBeFalsy();
-    // expect(result.deadline).toBeFalsy();
+    expect(result.name).toEqual(dbList.name);
+    expect(result.visibility).toBeTruthy();
     expect(result.uuAppErrorMap).toEqual({});
-    }
+    });
   })

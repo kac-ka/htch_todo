@@ -34,7 +34,7 @@ class TodoMainAbl {
     );
 
     // HDS 2
-    const schemas = ["todoMain"];
+    const schemas = ["todoMain", "list", "item"];
     let schemaCreateResults = schemas.map(async (schema) => {
       try {
         return await DaoFactory.getDao(schema).createSchema();
@@ -101,8 +101,16 @@ class TodoMainAbl {
       }
     }
 
-    // HDS 4 - HDS N
-    // TODO Implement according to application needs...
+    // HDS 4 
+    dtoIn.awid = awid;
+    dtoIn.state = "active";
+    delete dtoIn.uuAppProfileAuthorities;
+    let todoInstance = {};
+    try {
+      todoInstance = await DaoFactory.getDao("todoMain").create(dtoIn); 
+    } catch (e) {
+      throw new Errors.Init.SysSetProfileFailed({ uuAppErrorMap }, { role: dtoIn.uuAppProfileAuthorities }, e);
+    }
 
     // HDS N+1
     const workspace = UuAppWorkspace.get(awid);

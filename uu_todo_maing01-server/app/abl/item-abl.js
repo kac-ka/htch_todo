@@ -19,13 +19,17 @@ const WARNINGS = {
     code: `${Errors.Delete.UC_CODE}unsupportedKeys`
   },
   deleteItemDoesNotExist: {
-    code: `${Errors.Delete.UC_CODE}itemDoesNotExist`
+    code: `${Errors.Delete.UC_CODE}itemDoesNotExist`,
+    message: "Item with given id does not exist."
   },
   listDoesNotExist: {
     code: `${Errors.Delete.UC_CODE}listDoesNotExist`
   },
   setFinalStateUnsupportedKeys: {
     code: `${Errors.SetFinalState.UC_CODE}unsupportedKeys`
+  },
+  listUnsupportedKeys: {
+    code: `${Errors.List.UC_CODE}unsupportedKeys`
   }
 };
 const EXECUTIVES_PROFILE = "Authorities";
@@ -34,11 +38,60 @@ class ItemAbl {
 
   constructor() {
     this.validator = Validator.load();
-    this.dao = DaoFactory.getDao("item");
-    this.dao.createSchema();
 
+    this.dao = DaoFactory.getDao("item");
+    this.instanceDao = DaoFactory.getDao("todoMain");
     this.daoList = DaoFactory.getDao("list");
-    this.daoList.createSchema();
+  }
+
+  async list(awid, dtoIn, session, authorizationResult) {
+    //HDS 1, 1.1
+    let validationResult = this.validator.validate("itemListDtoInType", dtoIn);
+    //1.2, 1.3
+    let uuAppErrorMap = ValidationHelper.processValidationResult(
+      dtoIn, 
+      validationResult,
+      WARNINGS.listStateUnsupportedKeys.code, 
+      Errors.List.InvalidDtoIn
+      );
+
+    //Authorization
+    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+
+    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+    dtoIn.uuIdentityName = session.getIdentity().getName();
+
+    //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.List.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.List.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
+
+    //HDS 3
+    let dtoOut;
+    try {
+      if (dtoIn.listId && dtoIn.state){ //HDS 3.A
+        dtoOut = await this.dao.listItemByListIdAndState(awid, dtoIn.listId, dtoIn.state);
+      } else if(dtoIn.listId){
+        dtoOut = await this.dao.listItemByListId(awid, dtoIn.listId);
+      } else if(dtoIn.state){ //HDS 3.B
+        dtoOut = await this.dao.listItemByState(awid, dtoIn.state);
+      } else{ //HDS 3.C
+        dtoOut = await this.dao.listItemAll(awid);
+      }
+    } catch (e) {
+      if (e instanceof ObjectStoreError) {
+        throw new Errors.List.ItemDaoListFailed({uuAppErrorMap}, e);
+      }
+    }
+    
+    //HDS 4
+    dtoOut.uuAppErrorMap = uuAppErrorMap;
+    return dtoOut;
   }
 
   async setFinalState(awid, dtoIn, session, authorizationResult) {
@@ -57,29 +110,35 @@ class ItemAbl {
 
     dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
     dtoIn.uuIdentityName = session.getIdentity().getName();
+
+    //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.SetFinalState.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.SetFinalState.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
     
+    //HDS 3, 4
     let dtoOut;
     try {
       let tmpItem;
-      try {
-        tmpItem = await this.dao.getItem(dtoIn.id);
-      } catch (error) {
-        if (e instanceof ObjectStoreError) {
-          throw new Errors.Get.ItemDaoGetFailed({uuAppErrorMap}, e);
-        }
-      throw e;
-      }
-      if(tmpItem.itemList.length === 0) {
-        uuAppErrorMap[Errors.SetFinalState.ItemDoesNotExist.code] = {
-          id: dtoIn.id,
-            type: "error",
-            message: "Item with given id does not exist."
-          }
+      tmpItem = await this.dao.getItem(awid, dtoIn.id);
+      if(tmpItem.itemList.length === 0) { //HDS 3.1
+        throw new Errors.Get.TodoInstanceDoesNotExist(uuAppErrorMap, {id: dtoIn.id});
         } else {
           if (tmpItem.itemList[0].state && tmpItem.itemList[0].state === "active"){
-            dtoOut = await this.dao.SetItemFinalState(dtoIn.id, dtoIn.state);
-          } else {
-            throw new Errors.SetFinalState.ItemIsNotInProperState({uuAppErrorMap});
+            dtoOut = await this.dao.SetItemFinalState(awid, dtoIn.id, dtoIn.state); 
+          } else { //HDS 3.2
+            throw new Errors.SetFinalState.ItemIsNotInProperState(
+              uuAppErrorMap, 
+              {
+                id: dtoIn.id,
+                state: item.state,
+                expectedState: active
+              });
           }
         }
     } catch (e) {
@@ -111,17 +170,42 @@ class ItemAbl {
      dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
      dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
-     //HDS 3
-     let dtoOut;
+      //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Delete.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Delete.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
+
+    //HDS 3
+    let dtoOut;
+    //HDS 3.1
+    tmpItem = await this.dao.getItem(dtoIn.id);
+    if(tmpItem.itemList.length === 0) {
+      ValidationHelper.addWarning(
+        uuAppErrorMap,
+        WARNINGS.Delete.deleteItemDoesNotExist.code,
+        WARNINGS.Delete.deleteItemDoesNotExist.message,
+        {id: dtoIn.id}
+      );
+    } else { //HDS 3.2
+      if(tmpItem.itemList[0].state === "completed") {
+        throw new Errors.Delete.ItemIsNotInCorrectState(
+          uuAppErrorMap, 
+          { 
+            id: dtoIn.id,
+            currentState: tmpItem.itemList[0].state,
+            expectedState: ["active", "cancelled"]
+        });
+      }
+    }
+
+    //HDS 4
     try {
-      dtoOut = await this.dao.getItem(dtoIn.id);
-      if(dtoOut.itemList.length === 0) {
-        uuAppErrorMap[WARNINGS.deleteItemDoesNotExist.code] = {
-          id: dtoIn.id,
-            type: "warning",
-            message: "Item with given id does not exist."
-          }
-        } 
+      await this.dao.deleteItemById(awid, dtoIn.id);
     } catch (e) {
       if (e instanceof ObjectStoreError) {
           throw new Errors.Delete.ItemDaoDeleteFailed({uuAppErrorMap}, e);
@@ -129,9 +213,9 @@ class ItemAbl {
       throw e;
     }
 
-     //HDS 5
-     dtoOut.uuAppErrorMap = uuAppErrorMap;
-     return dtoOut;
+    //HDS 5
+    dtoOut.uuAppErrorMap = uuAppErrorMap;
+    return dtoOut;
    }
 
   async update(awid, dtoIn, session, authorizationResult) {
@@ -151,49 +235,59 @@ class ItemAbl {
     dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
-    let dtoOut;
-    try {
-
-      if (dtoIn.listId){
-        let tmpList = await this.daoList.getListById(dtoIn.listId);
-        if (tmpList.itemList.length === 0){
-          return uuAppErrorMap[Errors.Update.ListDoesNotExist.code] = {
-            id: dtoIn.id,
-            timestamp: (new Date()).toISOString(),
-              type: "error",
-              message: "List with given id does not exist."
-          }
-        }
-      }else {
-        let tmpItem = await this.dao.getItem(dtoIn.id);
-        if (tmpItem.itemList.length === 0){
-          //return new Errors.Create.ListDoesNotExist({uuAppErrorMap});
-          return uuAppErrorMap[Errors.Update.ItemDoesNotExist.code] = {
-            id: dtoIn.id,
-            timestamp: (new Date()).toISOString(),
-              type: "error",
-              message: "Item with given id does not exist."
-          }
-        }
-        else{
-          if (dtoIn.text){
-            dtoOut = await this.dao.updateItemText(dtoIn.id, dtoIn.text);
-          }
-          if (dtoIn.highPriority){
-            dtoOut = await this.dao.updateItemHighPriority(dtoIn.id, dtoIn.highPriority);
-          }
-          if (dtoIn.ListId){
-            dtoOut = await this.dao.updateItemListId(dtoIn.id, dtoIn.listId);
-          }
-        }
+    //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Update.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Update.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
       }
-    } catch (e) {
+    }
+
+    //HDS 3
+    let tmpItem = await this.dao.getItem(dtoIn.id);
+    if (tmpItem.itemList.length === 0){ //HDS 3.1
+      throw new Errors.Update.ItemDoesNotExist(uuAppErrorMap, { id: dtoIn.id});
+    } else { //HDS 3.2
+      if(tmpItem.itemList[0].state !== "active") {
+        throw new Errors.Update.ItemIsNotInCorrectState(
+          uuAppErrorMap, 
+          { 
+            id: dtoIn.id,
+            currentState: tmpItem.itemList[0].state,
+            expectedState: "active"
+          });
+      }
+    }
+        
+    //HDS 4
+    let dtoOut;
+    if (dtoIn.listId) {
+      let tmpList = await this.daoList.getListById(awid, dtoIn.listId);
+      if (tmpList.itemList.length === 0){ //HDS 4.1
+        throw new Errors.Update.ListDoesNotExist(uuAppErrorMap, {id: dtoIn.listId});
+      }
+    }  
+          
+    //HDS 5
+    try { //HDS 5.1.A
+      if (dtoIn.text){
+        dtoOut = await this.dao.updateItemText(awid, dtoIn.id, dtoIn.text);
+      }
+      if (dtoIn.highPriority){
+        dtoOut = await this.dao.updateItemHighPriority(awid, dtoIn.id, dtoIn.highPriority);
+      }
+      if (dtoIn.ListId){
+        dtoOut = await this.dao.updateItemListId(awid, dtoIn.id, dtoIn.listId);
+      }        
+    } catch (e) { //HDS 5.1.B
       if (e instanceof ObjectStoreError) {
         throw new Errors.Update.ItemDaoUpdateFailed({uuAppErrorMap}, e);
       }
     }
 
-    //HDS 5
+    //HDS 6
     dtoOut.uuAppErrorMap = uuAppErrorMap;
     return dtoOut;
   }
@@ -213,27 +307,26 @@ class ItemAbl {
     dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
 
     dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
-
-    let dtoOut;
-    try {
-      dtoOut = await this.dao.getItem(dtoIn.id);
-      if (dtoOut.itemList.length === 0){
-        //return new Errors.Create.ListDoesNotExist({uuAppErrorMap});
-        return uuAppErrorMap[Errors.Get.ItemDoesNotExist.code] = {
-          id: dtoIn.id,
-          timestamp: (new Date()).toISOString(),
-            type: "error",
-            message: "Item with given id does not exist."
-        }
-      }
-    } catch (e) {
-      if (e instanceof ObjectStoreError) {
-        throw new Errors.Get.ItemDaoGetFailed({uuAppErrorMap}, e);
+    dtoIn.uuIdentityName = session.getIdentity().getName();
+    
+    //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Get.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Get.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
       }
     }
+
+    //HDS 3
+    let dtoOut;
+      dtoOut = await this.dao.getItem(awid, dtoIn.id);
+      if (dtoOut.itemList.length === 0){ //HDS 3.1
+        throw new Errors.Get.ItemDoesNotExist(uuAppErrorMap, {id: dtoIn.id});
+      }
     
-    //HDS 5
+    //HDS 4
     dtoOut.uuAppErrorMap = uuAppErrorMap;
     return dtoOut;
   }
@@ -255,28 +348,37 @@ class ItemAbl {
     dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
     dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
+    //HDS 2
+    let todoInstance = await this.instanceDao.getByAwid(awid);
+    if(!todoInstance){ //HDS 2.1.1
+      throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
+    }else { //HDS 2.1.2
+      if (todoInstance.state !== "active"){
+        throw new Errors.Create.TodoInstanceIsNotInProperState(uuAppErrorMap, {awid: awid, currenState: instanceTodo.state, expectedState: "active"})
+      }
+    }
+
+    //HDS 3
+    dtoIn.state = "active";
+
+    //HDS 4, 5
+    dtoIn.awid = awid;
     let dtoOut;
     try {
-      let tmpList = await this.daoList.getListById(dtoIn.listId);
-      if (tmpList.itemList.length === 0){
-        //return new Errors.Create.ListDoesNotExist({uuAppErrorMap});
-        return uuAppErrorMap[Errors.Create.ListDoesNotExist.code] = {
-          id: dtoIn.listId,
-          timestamp: (new Date()).toISOString(),
-            type: "error",
-            message: "List with given id does not exist."
-        }
+      let tmpList = await this.daoList.getListById(awid, dtoIn.listId);
+      if (tmpList.itemList.length === 0){ //HDS 4.1
+        throw new Errors.Create.ListDoesNotExist(uuAppErrorMap, {id: dtoIn.listId});
       }
       else{
-        dtoOut = await this.dao.createItem(dtoIn)
+        dtoOut = await this.dao.createItem(awid, dtoIn)
       }
-    } catch (e) {
+    } catch (e) { //HDS 5.1.B.1
       if (e instanceof ObjectStoreError) {
         throw new Errors.Create.ItemDaoCreateFailed({uuAppErrorMap}, e);
       }
     }
-    
-    //HDS 5
+
+    //HDS 6
     dtoOut.uuAppErrorMap = uuAppErrorMap;
     return dtoOut;
   }

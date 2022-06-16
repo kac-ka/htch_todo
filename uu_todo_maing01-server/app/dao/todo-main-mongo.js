@@ -17,6 +17,13 @@ class TodoMainMongo extends UuObjectDao {
     };
     return await super.findOne(filter);
   }
+  
+  async getByAwid(awid) {
+    let filter = {
+      awid: awid
+    };
+    return await super.findOne(filter);
+  }
 
   async update(uuObject) {
     let filter = {

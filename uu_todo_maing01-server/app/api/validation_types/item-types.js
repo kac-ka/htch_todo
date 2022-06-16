@@ -25,3 +25,12 @@ const itemCreateDtoInType = shape({
     id: id().isRequired(),
     state: oneOf(["completed", "cancelled"]).isRequired()
   });
+
+  const itemListDtoInType = shape({
+    listId: id(),
+    state: oneOf(["active", "completed", "cancelled"]),
+    pageInfo: shape({
+      pageIndex: integer(),
+      pageSize: integer()
+    })
+  });

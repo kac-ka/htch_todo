@@ -65,6 +65,11 @@
         "realization": "api/controllers/ItemController.setFinalState",
         "httpMethod": "POST",
         "type": "CMD"
+      },
+      "item/list": {
+        "realization": "api/controllers/ItemController.list",
+        "httpMethod": "GET",
+        "type": "CMD"
       }
     }
   }

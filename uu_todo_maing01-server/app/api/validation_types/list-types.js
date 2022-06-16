@@ -12,7 +12,7 @@ const toDoCreateList = shape({
   const toDoUpdateList = shape({
     id: id().isRequired(),
     name: string(1, 30).isRequired(),
-    description: uu5String(4000),
+    description: uu5String(),
     deadline: date()
   });
 
@@ -22,6 +22,8 @@ const toDoCreateList = shape({
   });
 
   const listListDtoInType = shape({
+    pageInfo: shape({
       pageIndex: integer(),
       pageSize: integer()
+    })
   });

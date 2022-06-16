@@ -36,6 +36,14 @@ const Init = {
       this.message = "Create uuAwsc failed.";
     }
   },
+
+  TodoInstanceCreateDaoFailed: class extends TodoMainUseCaseError {
+    constructor() {
+      super(...arguments);
+      this.code = `${Init.UC_CODE}todoInstanceCreateDaoFailed`;
+      this.message = "TodoInstance DAO create failed.";
+    }
+  }
 };
 
 module.exports = {

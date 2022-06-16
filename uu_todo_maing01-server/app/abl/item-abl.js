@@ -10,7 +10,16 @@ const WARNINGS = {
     code: `${Errors.Create.UC_CODE}unsupportedKeys`
   },
   getUnsupportedKeys: {
-    code: `${Errors.Create.UC_CODE}unsupportedKeys`
+    code: `${Errors.Get.UC_CODE}unsupportedKeys`
+  },
+  updateUnsupportedKeys: {
+    code: `${Errors.Update.UC_CODE}unsupportedKeys`
+  },
+  deleteUnsupportedKeys: {
+    code: `${Errors.Update.UC_CODE}unsupportedKeys`
+  },
+  listDoesNotExist: {
+    code: `${Errors.Delete.UC_CODE}listDoesNotExist`
   }
 };
 const EXECUTIVES_PROFILE = "Authorities";
@@ -24,6 +33,109 @@ class ItemAbl {
 
     this.daoList = DaoFactory.getDao("list");
     this.daoList.createSchema();
+  }
+
+  async delete(awid, dtoIn, session, authorizationResult) {
+     //HDS 1, 1.1
+     let validationResult = this.validator.validate("itemDeleteDtoInType", dtoIn);
+     //1.2, 1.3
+     let uuAppErrorMap = ValidationHelper.processValidationResult(
+       dtoIn, 
+       validationResult,
+       WARNINGS.deleteUnsupportedKeys.code, 
+       Errors.Delete.InvalidDtoIn
+       );
+ 
+     //Authorization
+     dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+ 
+     dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+     dtoIn.uuIdentityName = session.getIdentity().getName(); 
+
+     //HDS 3
+    try {
+      dtoOut = await this.dao.getListById(dtoIn.id);
+      if(dtoOut.itemList.length === 0) {
+        uuAppErrorMap[WARNINGS.listDoesNotExist.code] = {
+          id: dtoIn.id,
+            type: "warning",
+            message: "List with given id does not exist."
+          }
+        } 
+    } catch (e) {
+      if (e instanceof ObjectStoreError) {
+          throw new Errors.Delete.ItemDaoDeleteFailed({uuAppErrorMap}, e);
+        }
+        throw e;
+    }
+
+     //HDS 5
+     dtoOut.uuAppErrorMap = uuAppErrorMap;
+     return dtoOut;
+   }
+
+  async update(awid, dtoIn, session, authorizationResult) {
+    //HDS 1, 1.1
+    let validationResult = this.validator.validate("itemUpdateDtoInType", dtoIn);
+    //1.2, 1.3
+    let uuAppErrorMap = ValidationHelper.processValidationResult(
+      dtoIn, 
+      validationResult,
+      WARNINGS.updateUnsupportedKeys.code, 
+      Errors.Update.InvalidDtoIn
+      );
+
+    //Authorization
+    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
+
+    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
+    dtoIn.uuIdentityName = session.getIdentity().getName(); 
+
+    let dtoOut;
+    try {
+
+      if (dtoIn.listId){
+        let tmpList = await this.daoList.getListById(dtoIn.listId);
+        if (tmpList.itemList.length === 0){
+          return uuAppErrorMap[Errors.Update.ListDoesNotExist.code] = {
+            id: dtoIn.id,
+            timestamp: (new Date()).toISOString(),
+              type: "error",
+              message: "List with given id does not exist."
+          }
+        }
+      }else {
+        let tmpItem = await this.dao.getItem(dtoIn.id);
+        if (tmpItem.itemList.length === 0){
+          //return new Errors.Create.ListDoesNotExist({uuAppErrorMap});
+          return uuAppErrorMap[Errors.Update.ItemDoesNotExist.code] = {
+            id: dtoIn.id,
+            timestamp: (new Date()).toISOString(),
+              type: "error",
+              message: "Item with given id does not exist."
+          }
+        }
+        else{
+          if (dtoIn.text){
+            dtoOut = await this.dao.updateItemText(dtoIn.id, dtoIn.text);
+          }
+          if (dtoIn.highPriority){
+            dtoOut = await this.dao.updateItemHighPriority(dtoIn.id, dtoIn.highPriority);
+          }
+          if (dtoIn.ListId){
+            dtoOut = await this.dao.updateItemListId(dtoIn.id, dtoIn.listId);
+          }
+        }
+      }
+    } catch (e) {
+      if (e instanceof ObjectStoreError) {
+        throw new Errors.Update.ItemDaoUpdateFailed({uuAppErrorMap}, e);
+      }
+    }
+
+    //HDS 5
+    dtoOut.uuAppErrorMap = uuAppErrorMap;
+    return dtoOut;
   }
 
   async get(awid, dtoIn, session, authorizationResult) {

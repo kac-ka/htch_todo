@@ -25,8 +25,6 @@ const WARNINGS = {
     message: "List with given id does not exist."
   }
 };
-
-const EXECUTIVES_PROFILE = "Authorities";
 class ListAbl {
 
   constructor() {
@@ -37,7 +35,7 @@ class ListAbl {
     this.instanceDao = DaoFactory.getDao("todoMain");
   }
 
-  async list(awid, dtoIn, session, authorizationResult) {
+  async list(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("listListDtoInType", dtoIn);
     //1.2, 1.3
@@ -47,12 +45,6 @@ class ListAbl {
     WARNINGS.getUnsupportedKeys.code, 
     Errors.List.InvalidDtoIn
     );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -81,7 +73,7 @@ class ListAbl {
     
   }
 
-  async delete(awid, dtoIn, session, authorizationResult) {
+  async delete(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("toDoDeleteList", dtoIn);
     //1.2, 1.3
@@ -92,14 +84,7 @@ class ListAbl {
     Errors.Delete.InvalidDtoIn
     );
 
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName();
-
-
-    //HDS2
+    // //HDS2
     let todoInstance = await this.instanceDao.getByAwid(awid);
     if(!todoInstance){ //HDS 2.1.1
       throw new Errors.Create.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
@@ -120,6 +105,8 @@ class ListAbl {
         WARNINGS.listDoesNotExist.message,
         {id: dtoIn.id}
       );
+      dtoOut.uuAppErrorMap = uuAppErrorMap;
+      return dtoOut;
     }
 
     //HDS 4
@@ -148,7 +135,7 @@ class ListAbl {
      return dtoOut;
   }
 
-  async update(awid, dtoIn, session, authorizationResult) {
+  async update(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("toDoUpdateList", dtoIn);
     //1.2, 1.3
@@ -158,12 +145,6 @@ class ListAbl {
     WARNINGS.deleteUnsupportedKeys.code, 
     Errors.Update.InvalidDtoIn
     );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -176,12 +157,13 @@ class ListAbl {
     }
 
     //HDS 3
-    let dateIn = new Date(dtoIn.deadline);
-    let dateMilliseconds = dateIn.getTime();
-    if(dateMilliseconds < Date.now()) { //HDS 3.1
-      throw new Errors.Update.DeadlineDateIsFromThePast(uuAppErrorMap, {deadline: dtoIn.deadline});
-    }
-
+    if(dtoIn.deadline) {
+      let dateIn = new Date(dtoIn.deadline);
+      let dateMilliseconds = dateIn.getTime();
+      if(dateMilliseconds < Date.now()) { //HDS 3.1
+        throw new Errors.Update.DeadlineDateIsFromThePast(uuAppErrorMap, {deadline: dtoIn.deadline});
+      }
+    }  
     //HDS 4
     dtoIn.awid = awid;
     let dtoOut;
@@ -212,7 +194,7 @@ class ListAbl {
     return dtoOut;
   }
 
-  async get(awid, dtoIn, session, authorizationResult) {
+  async get(awid, dtoIn) {
   //HDS 1, 1.1
   let validationResult = this.validator.validate("toDoGetList", dtoIn);
   //1.2, 1.3
@@ -222,12 +204,6 @@ class ListAbl {
     WARNINGS.getUnsupportedKeys.code, 
     Errors.Get.InvalidDtoIn
     );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -259,7 +235,7 @@ class ListAbl {
     return dtoOut;
   }
 
-  async create(awid, dtoIn, session, authorizationResult) {
+  async create(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("toDoCreateList", dtoIn);
     //1.2, 1.3
@@ -269,12 +245,6 @@ class ListAbl {
       WARNINGS.createUnsupportedKeys.code, 
       Errors.Create.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let instanceTodo = await this.instanceDao.getByAwid(awid);
@@ -287,10 +257,12 @@ class ListAbl {
     }
 
     //HDS 3
-    let dateIn = new Date(dtoIn.deadline);
-    let dateMilliseconds = dateIn.getTime();
-    if(dateMilliseconds < Date.now()) { //HDS 3.1
-      throw new Errors.Create.DeadlineDateIsFromThePast(uuAppErrorMap, {deadline: dtoIn.deadline});
+    if(dtoIn.deadline) {
+      let dateIn = new Date(dtoIn.deadline);
+      let dateMilliseconds = dateIn.getTime();
+      if(dateMilliseconds < Date.now()) { //HDS 3.1
+        throw new Errors.Create.DeadlineDateIsFromThePast(uuAppErrorMap, {deadline: dtoIn.deadline});
+      }
     }
 
     //HDS 4

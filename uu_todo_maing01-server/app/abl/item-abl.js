@@ -32,7 +32,6 @@ const WARNINGS = {
     code: `${Errors.List.UC_CODE}unsupportedKeys`
   }
 };
-const EXECUTIVES_PROFILE = "Authorities";
 
 class ItemAbl {
 
@@ -44,7 +43,7 @@ class ItemAbl {
     this.daoList = DaoFactory.getDao("list");
   }
 
-  async list(awid, dtoIn, session, authorizationResult) {
+  async list(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemListDtoInType", dtoIn);
     //1.2, 1.3
@@ -54,12 +53,6 @@ class ItemAbl {
       WARNINGS.listUnsupportedKeys.code, 
       Errors.List.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -94,7 +87,7 @@ class ItemAbl {
     return dtoOut;
   }
 
-  async setFinalState(awid, dtoIn, session, authorizationResult) {
+  async setFinalState(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemSetFinalStateDtoInType", dtoIn);
     //1.2, 1.3
@@ -104,12 +97,6 @@ class ItemAbl {
       WARNINGS.setFinalStateUnsupportedKeys.code, 
       Errors.SetFinalState.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName();
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -153,7 +140,7 @@ class ItemAbl {
      return dtoOut;
   }
 
-  async delete(awid, dtoIn, session, authorizationResult) {
+  async delete(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemDeleteDtoInType", dtoIn);
     //1.2, 1.3
@@ -163,12 +150,6 @@ class ItemAbl {
       WARNINGS.deleteUnsupportedKeys.code, 
       Errors.Delete.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -218,7 +199,7 @@ class ItemAbl {
     return dtoOut;
    }
 
-  async update(awid, dtoIn, session, authorizationResult) {
+  async update(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemUpdateDtoInType", dtoIn);
     //1.2, 1.3
@@ -228,12 +209,6 @@ class ItemAbl {
       WARNINGS.updateUnsupportedKeys.code, 
       Errors.Update.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
@@ -293,7 +268,7 @@ class ItemAbl {
     return dtoOut;
   }
 
-  async get(awid, dtoIn, session, authorizationResult) {
+  async get(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemGetDtoInType", dtoIn);
     //1.2, 1.3
@@ -304,13 +279,7 @@ class ItemAbl {
       Errors.Get.InvalidDtoIn
       );
 
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName();
-    
-    //HDS 2
+    // //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);
     if(!todoInstance){ //HDS 2.1.1
       throw new Errors.Get.TodoInstanceDoesNotExist(uuAppErrorMap, {awid: awid});
@@ -332,7 +301,7 @@ class ItemAbl {
     return dtoOut;
   }
 
-  async create(awid, dtoIn, session, authorizationResult) {
+  async create(awid, dtoIn) {
     //HDS 1, 1.1
     let validationResult = this.validator.validate("itemCreateDtoInType", dtoIn);
     //1.2, 1.3
@@ -342,12 +311,6 @@ class ItemAbl {
       WARNINGS.createUnsupportedKeys.code, 
       Errors.Create.InvalidDtoIn
       );
-
-    //Authorization
-    dtoIn.visibility = authorizationResult.getAuthorizedProfiles().includes(EXECUTIVES_PROFILE);
-
-    dtoIn.uuIdentity = session.getIdentity().getUuIdentity();
-    dtoIn.uuIdentityName = session.getIdentity().getName(); 
 
     //HDS 2
     let todoInstance = await this.instanceDao.getByAwid(awid);

@@ -1,84 +1,100 @@
-import { Lsi } from "uu5g05";
-import Uu5Elements from "uu5g05-elements";
-import importLsi from "../lsi/import-lsi.js";
+import UU5 from "uu5g04";
 
-const About = {
-  about: <Lsi import={importLsi} path={["AboutContent", "content"]} />,
-  license: {
+export const About = {
+  about: {
+    cs: "Demo aplikace je šablona pro vývoj nových aplikací.",
+    en: "Demo application is a template for developing new applications.",
+  },
+  licence: {
     termsOfUse: "https://unicorn.com/tou/your_product",
     organisation: {
-      name: "Unicorn a.s.",
-      uri: "https://www.unicorn.com/",
-    },
-    authorities: [
-      {
-        name: "Name Surname",
+      cs: {
+        name: "Unicorn a.s.",
         uri: "https://www.unicorn.com/",
       },
-    ],
+      en: {
+        name: "Unicorn a.s.",
+        uri: "https://www.unicorn.com/",
+      },
+    },
+    authorities: {
+      cs: [
+        {
+          name: "Name Surname",
+          uri: "https://www.unicorn.com/",
+        },
+      ],
+      en: [
+        {
+          name: "Name Surname",
+          uri: "https://www.unicorn.com/",
+        },
+      ],
+    },
   },
   leadingAuthors: [
     {
       name: "Some Name",
       uuIdentity: "4-4-1",
-      role: "Chief Business Architect & Stakeholder",
+      role: {
+        en: "Chief Business Architect & Stakeholder",
+      },
     },
     {
       name: "Other Name",
       uuIdentity: "4-4-1",
-      role: "Head of Development",
+      role: {
+        en: "Head of Development",
+      },
     },
   ],
   otherAuthors: [
     {
       name: "Your Name",
       uuIdentity: "4-4-1",
-      role: "Developer",
+      role: {
+        en: "Developer",
+      },
     },
     {
       name: "More Names",
       uuIdentity: "4-4-1",
-      role: "Developer",
+      role: {
+        en: "Developer",
+      },
     },
   ],
   usedTechnologies: {
-    technologies: [
-      <Uu5Elements.Link key="uaf" href="https://docs.plus4u.net/uaf" target="_blank">
-        UAF
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link key="uuapp" href="https://docs.plus4u.net/uaf/uuapp" target="_blank">
-        uuApp
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link key="uu5" href="https://docs.plus4u.net/uaf/uuapp/uu5" target="_blank">
-        uu5
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link key="uuplus4u5" href="https://docs.plus4u.net/uaf/uuapp/plus4u5" target="_blank">
-        uuPlus4U5
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link
-        key="uuproductcatalogue"
-        href="https://uuapp.plus4u.net/uu-bookkit-maing01/7f743efd1bf6486d8e72b27a0df92ba7/book"
-        target="_blank"
-      >
-        uuProductCatalogue
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link key="uuappserver" href="https://docs.plus4u.net/uaf/uuapp/uuappserver" target="_blank">
-        uuAppServer
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link
-        key="uuoidc"
-        href="https://uuapp.plus4u.net/uu-bookkit-maing01/d684156f06004f2781c88777e74834ef"
-        target="_blank"
-      >
-        uuOIDC
-      </Uu5Elements.Link>,
-      <Uu5Elements.Link key="uucloud" href="https://docs.plus4u.net/uaf/uuapp/uucloud" target="_blank">
-        uuCloud
-      </Uu5Elements.Link>,
-    ],
-    content: <Lsi import={importLsi} path={["AboutContent", "technologiesContent"]} />,
+    technologies: {
+      en: [
+        <UU5.Bricks.LinkUAF key="uaf" />,
+        <UU5.Bricks.LinkUuApp key="uuapp" />,
+        <UU5.Bricks.LinkUU5 key="uu5" />,
+        <UU5.Bricks.LinkUuPlus4U5 key="uuplus4u5" />,
+        <UU5.Bricks.Link
+          content="uuProductCatalogue"
+          href="https://uuapp.plus4u.net/uu-bookkit-maing01/7f743efd1bf6486d8e72b27a0df92ba7/book"
+          target="_blank"
+          key="uuproductcatalogue"
+        />,
+        <UU5.Bricks.LinkUuAppServer key="uuappserver" />,
+        <UU5.Bricks.LinkUuOIDC key="uuoidc" />,
+        <UU5.Bricks.LinkUuCloud key="uucloud" />,
+      ],
+    },
+    content: {
+      cs: [
+        `<uu5string/>Dále byly použity technologie: <UU5.Bricks.LinkHTML5/>, <UU5.Bricks.LinkCSS/>, <UU5.Bricks.LinkJavaScript/>, <UU5.Bricks.LinkBootstrap/>,
+        <UU5.Bricks.LinkReact/>, <UU5.Bricks.LinkRuby/>, <UU5.Bricks.LinkPuma/> a <UU5.Bricks.LinkDocker/>.
+        Aplikace je provozována v rámci internetové služby <UU5.Bricks.LinkPlus4U/> s využitím cloudu <UU5.Bricks.LinkMSAzure/>.`,
+      ],
+      en: [
+        `<uu5string/>Other used technologies: <UU5.Bricks.LinkHTML5/>, <UU5.Bricks.LinkCSS/>, <UU5.Bricks.LinkJavaScript/>, <UU5.Bricks.LinkBootstrap/>,
+        <UU5.Bricks.LinkReact/>, <UU5.Bricks.LinkRuby/>, <UU5.Bricks.LinkPuma/> a <UU5.Bricks.LinkDocker/>.
+        Application is operated in the <UU5.Bricks.LinkPlus4U/> internet service with the usage of <UU5.Bricks.LinkMSAzure/> cloud.`,
+      ],
+    },
   },
 };
 
-export { About };
 export default About;

@@ -105,6 +105,7 @@ class TodoMainAbl {
     dtoIn.awid = awid;
     dtoIn.state = "active";
     delete dtoIn.uuAppProfileAuthorities;
+    
     let todoInstance = {};
     try {
       todoInstance = await DaoFactory.getDao("todoMain").create(dtoIn); 

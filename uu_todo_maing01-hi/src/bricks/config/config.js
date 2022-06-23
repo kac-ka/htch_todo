@@ -1,4 +1,4 @@
-import { Utils } from "uu5g05";
+import UU5 from "uu5g04";
 import Config from "../../config/config.js";
 
 const TAG = Config.TAG + "Bricks.";
@@ -7,7 +7,7 @@ export default {
   ...Config,
 
   TAG,
-  Css: Utils.Css.createCssModule(
+  Css: UU5.Common.Css.createCssModule(
     TAG.replace(/\.$/, "")
       .toLowerCase()
       .replace(/\./g, "-")

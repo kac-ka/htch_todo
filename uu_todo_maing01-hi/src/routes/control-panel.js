@@ -1,92 +1,85 @@
 //@@viewOn:imports
-import { createVisualComponent, useDataObject, Lsi, LevelProvider, DynamicLibraryComponent } from "uu5g05";
-import Uu5Elements from "uu5g05-elements";
-import Plus4U5App, { withRoute } from "uu_plus4u5g02-app";
+import UU5 from "uu5g04";
+import "uu5g04-bricks";
+import "uu5g04-forms";
+import { createVisualComponent, useData } from "uu5g04-hooks";
+import UuTerritory from "uu_territoryg01";
+import "uu_territoryg01-artifactifc";
+import Plus4U5 from "uu_plus4u5g01";
+import "uu_plus4u5g01-app";
+import UuContentKit from "uu_contentkitg01";
 import Calls from "calls";
 
 import Config from "./config/config.js";
-import RouteBar from "../core/route-bar.js";
-import importLsi from "../lsi/import-lsi.js";
+import Lsi from "../config/lsi.js";
 //@@viewOff:imports
 
-//@@viewOn:constants
-//@@viewOff:constants
-
-//@@viewOn:css
-//@@viewOff:css
-
-//@@viewOn:helpers
-//@@viewOff:helpers
-
-let ControlPanel = createVisualComponent({
+const STATICS = {
   //@@viewOn:statics
-  uu5Tag: Config.TAG + "ControlPanel",
+  displayName: Config.TAG + "ControlPanel",
   //@@viewOff:statics
+};
+
+export const ControlPanel = createVisualComponent({
+  ...STATICS,
 
   //@@viewOn:propTypes
-  propTypes: {},
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
-  defaultProps: {},
   //@@viewOff:defaultProps
 
   render(props) {
     //@@viewOn:private
-    const { state, data, errorData } = useDataObject({ handlerMap: { load: Calls.getWorkspace } });
+    let { viewState, asyncData: data } = useData({ onLoad: Calls.getWorkspace });
     //@@viewOff:private
 
     //@@viewOn:interface
     //@@viewOff:interface
 
     //@@viewOn:render
+    let attrs = UU5.Common.VisualComponent.getAttrs(props);
     let child;
     let territoryBaseUri;
     let artifactId;
-    if (state === "error" || state === "errorNoData") {
+    if (viewState === "error") {
       child = (
-        <Plus4U5App.Error error={errorData?.error}>
-          <Lsi import={importLsi} path={["ControlPanel", "rightsError"]} />
-        </Plus4U5App.Error>
+        <Plus4U5.Bricks.Error error={data.dtoOut} errorData={data?.dtoOut?.uuAppErrorMap}>
+          <UU5.Bricks.Lsi lsi={Lsi.controlPanel.rightsError} />
+        </Plus4U5.Bricks.Error>
       );
-    } else if (state === "pending" || state === "pendingNoData") {
-      child = <Plus4U5App.SpaPending />;
+    } else if (viewState === "load") {
+      child = <UU5.Bricks.Loading />;
     } else if (data.artifactUri) {
       const url = new URL(data.artifactUri);
       url.pathname = url.pathname.split("/", 3).join("/");
       territoryBaseUri = url.href.split("?")[0];
       artifactId = url.searchParams.get("id");
       child = (
-        <LevelProvider level={0}>
-          <DynamicLibraryComponent
-            {...props}
-            uu5Tag="UuTerritory.ArtifactIfc.Bricks.PermissionSettings"
-            style={{ margin: 24, width: "auto" }} // TODO Use className when uu_territory gets fixed (it ignores it now)
-            territoryBaseUri={territoryBaseUri}
-            artifactId={artifactId}
-          />
-        </LevelProvider>
+        <UuTerritory.ArtifactIfc.Bricks.PermissionSettings
+          {...attrs}
+          style={{ marginLeft: "30px", marginRight: "30px", width: "initial" }} // TODO Use className when uu_territory gets fixed (it ignores it now)
+          territoryBaseUri={territoryBaseUri}
+          artifactId={artifactId}
+        />
       );
     } else {
       child = (
-        <Uu5Elements.HighlightedBox icon="mdi-alert-circle" colorScheme="negative">
-          <Lsi import={importLsi} path={["ControlPanel", "btNotConnected"]} />
-        </Uu5Elements.HighlightedBox>
+        <UuContentKit.Bricks.BlockDanger>
+          <UU5.Bricks.Lsi lsi={Lsi.controlPanel.btNotConnected} />
+        </UuContentKit.Bricks.BlockDanger>
       );
     }
     return (
-      <>
-        <RouteBar />
+      <UU5.Common.Fragment>
+        {viewState !== "load" ? (
+          <Plus4U5.App.ArtifactSetter territoryBaseUri={territoryBaseUri} artifactId={artifactId} />
+        ) : null}
         {child}
-      </>
+      </UU5.Common.Fragment>
     );
     //@@viewOff:render
   },
 });
 
-ControlPanel = withRoute(ControlPanel, { authenticated: true });
-
-//@@viewOn:exports
-export { ControlPanel };
 export default ControlPanel;
-//@@viewOff:exports

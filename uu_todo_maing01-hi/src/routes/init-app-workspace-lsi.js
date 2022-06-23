@@ -1,7 +1,7 @@
 export default {
   notAuthorized: {
-    cs: "Nemáte dostatečná práva k použití aplikace.",
-    en: "You do not have sufficient rights to use the application.",
+    cs: "Nemáte dostatečná práva k použití aplikace",
+    en: "You do not have sufficient rights to use the application",
   },
 
   formHeader: {
@@ -11,9 +11,9 @@ export default {
 
   formHeaderInfo: {
     cs: `<uu5string/>Vaše uuApp běží, ale vyžaduje inicializaci. Pokud potřebujete pomoci s vyplněním tohoto formuláře, podívejte se do
-<Uu5Elements.Link target="_blank" href="#">Dokumentace</Uu5Elements.Link>.`,
+<UU5.Bricks.Link target="_blank" style="color: inherit" href="#">Dokumentace</UU5.Bricks.Link>.`,
     en: `<uu5string/>Your uuApp is running, but requires initialization. If you need help with filling up this form, see
-<Uu5Elements.Link target="_blank" href="#">Documentation</Uu5Elements.Link>.`,
+<UU5.Bricks.Link target="_blank" style="color: inherit" href="#">Documentation</UU5.Bricks.Link>.`,
   },
 
   notAuthorizedForInit: {

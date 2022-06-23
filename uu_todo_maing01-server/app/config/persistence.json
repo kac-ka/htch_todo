@@ -8,10 +8,12 @@
           "realization": "dao/TodoMainMongo"
         },
         "list": {
-          "realization": "dao/ListMongo"
+          "realization": "dao/ListMongo",
+          "maxNoi": 1000
         },
         "item": {
-          "realization": "dao/ItemMongo"
+          "realization": "dao/ItemMongo",
+          "maxNoi": 1000
         }
       }
     }

@@ -1,68 +1,77 @@
 //@@viewOn:imports
-import { createVisualComponent, Utils, Lsi, useDataObject, Environment } from "uu5g05";
-import Uu5Elements from "uu5g05-elements";
-import Uu5Forms from "uu5g05-forms";
-import Plus4U5App, { withRoute } from "uu_plus4u5g02-app";
+import UU5 from "uu5g04";
+import "uu5g04-bricks";
+import "uu5g04-forms";
+import { createVisualComponent, useData, useRef, useState, useCallback, useLsiValues } from "uu5g04-hooks";
+import Plus4U5 from "uu_plus4u5g01";
+import "uu_plus4u5g01-app";
 import Calls from "calls";
+import SpaUnauthorizedInit from "../core/spa-unauthorized-init.js";
 import Config from "./config/config.js";
-import RouteBar from "../core/route-bar.js";
-import importLsi from "../lsi/import-lsi.js";
+import Lsi from "./init-app-workspace-lsi.js";
 //@@viewOff:imports
 
-//@@viewOn:constants
 const RELATIVE_URI_REGEXP = new RegExp(/^\/[^/]/);
-//@@viewOff:constants
 
-//@@viewOn:css
-const Css = {
-  main: () =>
-    Config.Css.css({
-      maxWidth: 512,
-      margin: "auto",
-    }),
-  formControls: () =>
-    Config.Css.css({
-      marginTop: 24,
-      textAlign: "right",
-    }),
-};
-//@@viewOff:css
-
-//@@viewOn:helpers
-async function save(values) {
-  let originalUrl = new URLSearchParams(window.location.search).get("originalUrl");
-  let workspace = await Calls.initAndGetWorkspace(values);
-  let redirectPath;
-  if (workspace && workspace.artifactUri) {
-    redirectPath = Environment.appBaseUri + "controlPanel";
-  } else if (originalUrl && RELATIVE_URI_REGEXP.test(originalUrl)) {
-    redirectPath = originalUrl;
-  } else {
-    redirectPath = Environment.appBaseUri;
-  }
-  window.location.replace(redirectPath);
-  return new Promise(() => {}); // don't resolve - we'll keep form disabled until reload happens
-}
-//@@viewOff:helpers
-
-let InitAppWorkspace = createVisualComponent({
+const STATICS = {
   //@@viewOn:statics
-  uu5Tag: Config.TAG + "InitAppWorkspace",
+  displayName: Config.TAG + "InitAppWorkspace",
   //@@viewOff:statics
+};
+
+const CLASS_NAMES = {
+  main: () => Config.Css.css`
+    max-width: 512px;
+    margin: auto;
+    padding: 10px;
+  `,
+  cancelButton: () => Config.Css.css`
+    display: none;
+  `,
+};
+
+export const InitAppWorkspace = createVisualComponent({
+  ...STATICS,
 
   //@@viewOn:propTypes
-  propTypes: {},
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
-  defaultProps: {},
   //@@viewOff:defaultProps
 
   render(props) {
     //@@viewOn:private
-    const { state, data, errorData } = useDataObject({
-      handlerMap: { load: Calls.loadIdentityProfiles },
-    });
+    const routeLsi = useLsiValues(Lsi);
+    const formRef = useRef();
+    let [initWorkspaceError, setInitWorkspaceError] = useState();
+    let { viewState, asyncData: data } = useData({ onLoad: Calls.loadIdentityProfiles });
+
+    let handleSave = useCallback(async ({ component, values }) => {
+      try {
+        let originalUrl = new URLSearchParams(window.location.search).get("originalUrl");
+        let workspace = await Calls.initAndGetWorkspace(values);
+        component.saveDone({ workspace, originalUrl });
+      } catch (error) {
+        component.saveFail(error);
+      }
+    }, []);
+
+    let handleSaveDone = useCallback(({ dtoOut }) => {
+      let { workspace, originalUrl } = dtoOut;
+      let redirectPath;
+      if (workspace && workspace.artifactUri) {
+        redirectPath = UU5.Environment.getAppBasePath() + "controlPanel";
+      } else if (originalUrl && RELATIVE_URI_REGEXP.test(originalUrl)) {
+        redirectPath = originalUrl;
+      } else {
+        redirectPath = UU5.Environment.getAppBasePath();
+      }
+      window.location.replace(redirectPath);
+    }, []);
+
+    let handleSaveFail = useCallback(({ dtoOut: error }) => {
+      setInitWorkspaceError(error);
+    }, []);
     //@@viewOff:private
 
     //@@viewOn:interface
@@ -70,71 +79,76 @@ let InitAppWorkspace = createVisualComponent({
 
     //@@viewOn:render
     let child;
+    let attrs = UU5.Common.VisualComponent.getAttrs(props, CLASS_NAMES.main());
 
-    if (state === "error" || state === "errorNoData") {
+    if (viewState === "error") {
       child = (
-        <Plus4U5App.Error error={errorData?.error}>
-          <Lsi import={importLsi} path={["InitAppWorkspace", "notAuthorized"]} />
-        </Plus4U5App.Error>
+        <Plus4U5.App.SpaError error={data.dtoOut} errorData={data?.dtoOut?.uuAppErrorMap}>
+          <UU5.Bricks.Lsi lsi={Lsi.notAuthorized} />
+        </Plus4U5.App.SpaError>
       );
-    } else if (state === "pending" || state === "pendingNoData") {
-      child = <Plus4U5App.SpaPending />;
+    } else if (viewState === "load") {
+      child = <UU5.Bricks.Loading />;
     } else {
       if (Array.isArray(data.authorizedProfileList) && data.authorizedProfileList.length > 0) {
-        const attrs = Utils.VisualComponent.getAttrs(props, Css.main());
         child = (
-          <div {...attrs}>
-            <Uu5Elements.Block
-              header={
-                <Uu5Elements.Text category="story" segment="heading" type="h2">
-                  <Lsi import={importLsi} path={["InitAppWorkspace", "formHeader"]} />
-                </Uu5Elements.Text>
-              }
-              info={<Lsi import={importLsi} path={["InitAppWorkspace", "formHeaderInfo"]} />}
-              collapsible={false}
+          <UU5.Forms.ContextSection
+            {...attrs}
+            header={
+              <UU5.Forms.ContextHeader
+                content={<UU5.Bricks.Lsi lsi={Lsi.formHeader} />}
+                info={<UU5.Bricks.Lsi lsi={Lsi.formHeaderInfo} />}
+              />
+            }
+          >
+            <UU5.Forms.ContextForm
+              ref_={formRef}
+              onSave={handleSave}
+              onSaveDone={handleSaveDone}
+              onSaveFail={handleSaveFail}
+              controlled={false}
+              inputColWidth={"m-12"}
+              labelColWidth={"m-12"}
             >
-              <Uu5Forms.Form onSubmit={async (e) => save(e.data.value)}>
-                <Uu5Forms.FormText
-                  required
-                  name="uuBtLocationUri"
-                  label={<Lsi import={importLsi} path={["InitAppWorkspace", "uuBtLocationUriLabel"]} />}
-                  info={<Lsi import={importLsi} path={["InitAppWorkspace", "uuBtLocationUriInfo"]} />}
-                />
-                <Uu5Forms.FormText
-                  name="name"
-                  label={<Lsi import={importLsi} path={["InitAppWorkspace", "nameLabel"]} />}
-                />
+              <UU5.Forms.Text
+                required
+                name="uuBtLocationUri"
+                label={routeLsi.uuBtLocationUriLabel}
+                tooltip={routeLsi.uuBtLocationUriTooltip}
+                controlled={false}
+              />
+              <UU5.Forms.Text name="name" label={routeLsi.nameLabel} controlled={false} />
+              <UU5.Forms.ContextControls
+                buttonSubmitProps={{ content: <UU5.Bricks.Lsi lsi={Lsi.initialize} /> }}
+                buttonCancelProps={{ className: CLASS_NAMES.cancelButton() }}
+              />
+            </UU5.Forms.ContextForm>
 
-                <div className={Css.formControls()}>
-                  <Uu5Forms.SubmitButton colorScheme="primary">
-                    <Lsi import={importLsi} path={["InitAppWorkspace", "initialize"]} />
-                  </Uu5Forms.SubmitButton>
-                </div>
-              </Uu5Forms.Form>
-            </Uu5Elements.Block>
-          </div>
+            {initWorkspaceError ? (
+              initWorkspaceError.dtoOut ? (
+                <UU5.Common.Error errorData={initWorkspaceError.dtoOut} />
+              ) : (
+                <UU5.Common.Error error={initWorkspaceError} moreInfo />
+              )
+            ) : null}
+          </UU5.Forms.ContextSection>
         );
       } else {
         child = (
-          <Plus4U5App.Error>
-            <Lsi import={importLsi} path={["InitAppWorkspace", "notAuthorizedForInit"]} />
-          </Plus4U5App.Error>
+          <SpaUnauthorizedInit>
+            <UU5.Bricks.Lsi lsi={Lsi.notAuthorizedForInit} />
+          </SpaUnauthorizedInit>
         );
       }
     }
     return (
-      <>
-        <RouteBar />
+      <UU5.Common.Fragment>
+        <Plus4U5.App.ArtifactSetter territoryBaseUri="" artifactId="" />
         {child}
-      </>
+      </UU5.Common.Fragment>
     );
   },
   //@@viewOff:render
 });
 
-InitAppWorkspace = withRoute(InitAppWorkspace, { authenticated: true });
-
-//@@viewOn:exports
-export { InitAppWorkspace };
 export default InitAppWorkspace;
-//@@viewOff:exports

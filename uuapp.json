@@ -118,6 +118,36 @@
         "imageUri": "",
         "uuEccReady": false,
         "template": "<UuTodo.Bricks.ItemList />"
+      },
+      {
+        "code": "UuTodo.Bricks.ListCreateForm",
+        "name": "ListCreateForm",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "ListCreateForm"
+        ],
+        "docCode": "UuTodoBricksListCreateForm",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.ListCreateForm />"
+      },
+      {
+        "code": "UuTodo.Bricks.ItemCreate",
+        "name": "ItemCreate",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "ItemCreate"
+        ],
+        "docCode": "UuTodoBricksItemCreate",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.ItemCreate />"
       }
     ]
   },

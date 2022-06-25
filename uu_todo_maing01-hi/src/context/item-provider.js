@@ -27,7 +27,7 @@ export const ItemProvider = createComponent({
   render({children}) {
     //@@viewOn:private
     let itemListResult = useDataList({
-      pageSize: 5, 
+      pageSize: 20, 
       handlerMap: {
         load: (dtoIn) => Calls.listItem(dtoIn),
         createItem: (dtoIn) => Calls.createItem(dtoIn),

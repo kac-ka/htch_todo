@@ -4,10 +4,12 @@ import { createVisualComponent, useRef, useState } from "uu5g04-hooks";
 import Item from "../bricks/item";
 import List from "../bricks/list";
 import Config from "./config/config";
+import Lsi from "./todo.lsi";
 import ItemProvider from "../context/item-provider";
 import ListProvider from "../context/list-provider";
 import ItemList from "../bricks/item-list";
 import ListMenu from "../bricks/list-menu";
+import ItemCreate from "../bricks/item-create";
 //@@viewOff:imports
 
 const STATICS = {
@@ -42,13 +44,84 @@ export const Todo = createVisualComponent({
     const updateItemRef = useRef();
     const listItemRef = useRef();
 
+    const[selectedList, setSelectedList] = useState();
     const[itemList, setItemList] = useState(null);
     //@viewOff:hooks
 
     //@@viewOn:private
+
+    function showError(lsi, params) {
+      UU5.Environment.getPage()
+        .getAlertBus()
+        .addAlert({
+          content: <UU5.Bricks.Lsi lsi={lsi} params={params} />,
+          colorSchema: "red"
+        });
+    }
+
     async function handleListItem(item){
+      setSelectedList(item.id);
       let data = await listItemRef.current({listId: item.id});
-      setItemList(data.itemList);
+      if (data.itemList.length > 0){
+        setItemList(data.itemList);
+      } else {
+        setItemList([]);
+      }
+    }
+
+    async function handleItemCreate(item){
+      let newItem = {};
+      try {
+        newItem = await createItemRef.current(item);
+      } catch (error) {
+        showError(Lsi.createFailed, [item.text]);
+      }
+
+      if (itemList !== null && newItem.id !== undefined){
+        setItemList([newItem, ...itemList]);
+      }
+      else if (newItem.id !== undefined){
+        setItemList([{newItem}]);
+      }
+    }
+
+    async function handleItemUpdate(item){
+      let newItem ={};
+      try {
+        newItem = await updateItemRef.current(item);
+      } catch (error) {
+        showError(Lsi.updateFailed, [item.id]);
+      }
+
+      if (itemList !== null && newItem.id !== undefined){
+        setItemList([newItem, ...itemList.filter(i => i.id !== item.id)]);
+      }
+      
+    }
+
+    async function handleItemDelete(item){
+      try {
+        await deleteItemRef.current({id: item.id});
+      } catch (error) {
+        showError(Lsi.deleteFailed, [item.id]);
+      }
+
+      if (itemList !== null){
+        setItemList([...itemList.filter(i => i.id !== item.id)]);
+      }
+    }
+
+    async function handleItemSetState(item){
+      let newItem ={};
+      try {
+        newItem = await setFinalStateItemRef.current(item);
+      } catch (error) {
+        showError(Lsi.setStateFailed, [item.id]);
+      }
+
+      if (itemList !== null && newItem.id !== undefined){
+        setItemList([newItem, ...itemList.filter(i => i.id !== item.id)]);
+      }
     }
     //@@viewOff:private
 
@@ -64,11 +137,9 @@ export const Todo = createVisualComponent({
     function renderReadyList(lists) {
       return (
         <>
-        
-        {/* <p>{lists.map((d => <p>{JSON.stringify(d.data.name)}</p>))}</p> */}
         <UU5.Bricks.Column colWidth={{xs: 3}}>
           <ListMenu lists={lists} onClick={handleListItem} />
-        </UU5.Bricks.Column>
+        </UU5.Bricks.Column>   
         </>
       );
     }
@@ -76,15 +147,9 @@ export const Todo = createVisualComponent({
     function renderReadyItem(items) {
       return (
         <>
-        {/* <p>{items.map((d => <p>{JSON.stringify(d.data.text)}</p>))}</p> */}
-          {/*
-          {() => {
-            <Item></Item>
-            }}
-           <JokesTitle jokes={jokes} />
-          <JokeCreate onCreate={handleCreateJoke} /> */}
           <UU5.Bricks.Column colWidth={{xs: 9}}>
-            <ItemList items={items}  />
+            <ItemCreate onCreate={handleItemCreate} selectedListId={selectedList}/>
+            <ItemList items={items} onUpdate={handleItemUpdate} onDelete={handleItemDelete} onSetState={handleItemSetState}/>
           </UU5.Bricks.Column>
         </>
       );
@@ -135,11 +200,13 @@ export const Todo = createVisualComponent({
           <ItemProvider>
             {({ state, data, newData, errorData, pendingData, handlerMap }) => {
               createItemRef.current = handlerMap.createItem;
-              deleteItemRef.current = handlerMap.deletItem;
+              deleteItemRef.current = handlerMap.deleteItem;
               getItemRef.current = handlerMap.getItem;
               setFinalStateItemRef.current = handlerMap.setFinalStateItem;
               updateItemRef.current = handlerMap.updateItem;
               listItemRef.current = handlerMap.listItem;
+              
+              const dataToRender = data && data.filter(d => d !== undefined);
 
               switch (state) {
                 case "pending":
@@ -152,7 +219,7 @@ export const Todo = createVisualComponent({
                 case "ready":
                 case "readyNoData":
                 default:
-                  return renderReadyItem(itemList === null ? data.map(d => d.data) : itemList);
+                  return renderReadyItem(itemList === null ? dataToRender.map(d => d.data) : itemList);
               }
             }}
           </ItemProvider>

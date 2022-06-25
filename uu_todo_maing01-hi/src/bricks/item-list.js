@@ -17,13 +17,19 @@ export const ItemList = createComponent({
 
   //@@viewOn:propTypes
   propTypes: {
-    items: UU5.PropTypes.array.isRequired
+    items: UU5.PropTypes.array.isRequired,
+    onUpdate: UU5.PropTypes.func,
+    onDelete: UU5.PropTypes.func,
+    onSetState: UU5.PropTypes.func
   },
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
   defaultProps: {
-    items: []
+    items: [],
+    onUpdate: () => {},
+    onDelete: () => {},
+    onSetState: () => {}
   },
   //@@viewOff:defaultProps
 
@@ -48,20 +54,9 @@ export const ItemList = createComponent({
 
     return currentNestingLevel ? (
       <div {...attrs}>
-        {/* <UU5.Bricks.Row>
-          {props.items.map(item => {
-            if (!item) return null;
-
-            return (
-              <UU5.Bricks.Column key={item.data.id} colWidth="xs-12 m-6 l-4 xl-3">
-                <Item item={item.data} />
-              </UU5.Bricks.Column>
-            );
-          })}
-        </UU5.Bricks.Row> */}
         <Uu5Tiles.ControllerProvider data={props.items}>
-          <Uu5Tiles.Grid tileHeight={"auto"} rowSpacing={5} height={250} passAllTileProps>
-            <Item />
+          <Uu5Tiles.Grid tileHeight={"auto"} rowSpacing={5} height={"auto"} passAllTileProps>
+            <Item onDelete={props.onDelete} onUpdate={props.onUpdate} onSetState={props.onSetState}/>
           </Uu5Tiles.Grid>
         </Uu5Tiles.ControllerProvider>
 

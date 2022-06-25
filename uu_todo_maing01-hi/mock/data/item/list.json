@@ -1,0 +1,101 @@
+{
+	"itemList": [
+		{
+			"listId": "62ab5543e0b80d0eb81e4412",
+			"text": "Item 42",
+			"highPriority": true,
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "active",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-16T17:06:19.088Z",
+				"mts": "2022-06-16T17:06:19.088Z",
+				"rev": 0
+			},
+			"id": "62ab630b30e31c2a681db122"
+		},
+		{
+			"listId": "62ab5543e0b80d0eb81e4412",
+			"text": "Test1",
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "completed",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-16T17:14:02.606Z",
+				"mts": "2022-06-16T17:51:57.750Z",
+				"rev": 1
+			},
+			"id": "62ab64da94d8f4256019d549"
+		},
+		{
+			"listId": "62ab5543e0b80d0eb81e4412",
+			"text": "Test2",
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "cancelled",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-16T17:15:28.962Z",
+				"mts": "2022-06-16T17:53:00.968Z",
+				"rev": 2
+			},
+			"id": "62ab653094d8f4256019d54c"
+		},
+		{
+			"listId": "62ab7413070def27dcd26445",
+			"text": "Test3",
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "active",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-16T18:19:28.244Z",
+				"mts": "2022-06-16T18:19:28.244Z",
+				"rev": 0
+			},
+			"id": "62ab7430070def27dcd26448"
+		},
+		{
+			"listId": "62ab7413070def27dcd26445",
+			"text": "Test4",
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "active",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-17T11:45:44.970Z",
+				"mts": "2022-06-17T11:45:44.970Z",
+				"rev": 0
+			},
+			"id": "62ac6968975d99306838d725"
+		},
+		{
+			"listId": "62a9e6990edf8927c0c24818",
+			"text": "Test5",
+			"visibility": true,
+			"uuIdentity": "2736-5330-1",
+			"uuIdentityName": "Kateřina Kunešová",
+			"state": "active",
+			"awid": "22222222222222222222222222222222",
+			"sys": {
+				"cts": "2022-06-17T11:48:29.277Z",
+				"mts": "2022-06-17T11:48:29.277Z",
+				"rev": 0
+			},
+			"id": "62ac6a0d975d99306838d732"
+		}
+	],
+	"pageInfo": {
+		"pageIndex": 0,
+		"pageSize": 1000,
+		"total": 6
+	},
+	"uuAppErrorMap": {}
+}

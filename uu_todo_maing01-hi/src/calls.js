@@ -6,6 +6,7 @@ import Plus4U5 from "uu_plus4u5g01";
 
 let Calls = {
   /** URL containing app base, e.g. "https://uuapp.plus4u.net/vendor-app-subapp/awid/". */
+  // APP_BASE_URI: location.protocol + "//" + location.host + "uu-todo-maing01/11111111111111111111111111111111/",
   APP_BASE_URI: location.protocol + "//" + location.host + UU5.Environment.getAppBasePath(),
 
   async call(method, url, dtoIn, clientOptions) {
@@ -37,6 +38,62 @@ let Calls = {
     await Calls.initWorkspace(dtoInData);
     return await Calls.getWorkspace();
   },
+
+  creteList(dtoIn) {
+    let commandUri = Calls.getCommandUri("list/create");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  getList(dtoIn) {
+    let commandUri = Calls.getCommandUri("list/get");
+    return Calls.call("get", commandUri, dtoIn);
+  },
+
+  updateList(dtoIn) {
+    let commandUri = Calls.getCommandUri("list/update");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  deleteList(dtoIn) {
+    let commandUri = Calls.getCommandUri("list/delete");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  listList(dtoIn) {
+    let commandUri = Calls.getCommandUri("list/list");
+    return Calls.call("get", commandUri, dtoIn);
+  },
+
+  createItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/create");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  getItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/get");
+    return Calls.call("get", commandUri, dtoIn);
+  },
+
+  updateItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/update");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  deleteItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/delete");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  setFinalStateItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/setFinalState");
+    return Calls.call("post", commandUri, dtoIn);
+  },
+
+  listItem(dtoIn) {
+    let commandUri = Calls.getCommandUri("item/list");
+    return Calls.call("get", commandUri, dtoIn);
+  },
+
 
   /*
   For calling command on specific server, in case of developing client site with already deployed

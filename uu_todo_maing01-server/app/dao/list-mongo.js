@@ -12,8 +12,8 @@ class ListMongo extends UuObjectDao {
     return await super.insertOne(list);
   }
 
-  async getListById(awid, listId) {
-    return await super.findOne({awid, listId});
+  async getListById(awid, id) {
+    return await super.findOne({awid, id});
   }
 
   async updateListName(awid, id, name) {
@@ -28,8 +28,8 @@ class ListMongo extends UuObjectDao {
     return await super.findOneAndUpdate({awid, id}, {$set : {"deadline": deadline}}, {upsert: true});
   }
 
-  async deleteList(awid, listId) {
-    return await super.deleteOne({awid, listId});
+  async deleteList(awid, id) {
+    return await super.deleteOne({awid, id});
   }
 
   async listByVisibility(awid, pageInfo = {pageIndex: 0, pageSize: 1000}) {

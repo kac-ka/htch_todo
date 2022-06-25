@@ -12,8 +12,8 @@ class ItemMongo extends UuObjectDao {
     return await super.insertOne(item);
   }
 
-  async getItem(awid, itemId){
-    return await super.findOne({awid, itemId});
+  async getItem(awid, id){
+    return await super.findOne({awid, id});
   }
 
   async deleteItemById(awid, itemId){

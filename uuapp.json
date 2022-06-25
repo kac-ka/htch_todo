@@ -12,6 +12,114 @@
       "appDeploymentUri": null
     }
   },
-  "uu_todo_maing01-hi": {},
+  "uu_todo_maing01-hi": {
+    "componentList": [
+      {
+        "code": "UuTodo.Bricks.Item",
+        "name": "Item",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "Item"
+        ],
+        "docCode": "UuTodoBricksItem",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.Item />"
+      },
+      {
+        "code": "UuTodo.Bricks.List",
+        "name": "List",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "List"
+        ],
+        "docCode": "UuTodoBricksList",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.List />"
+      },
+      {
+        "code": "UuTodo.Routes.Todo",
+        "name": "Todo",
+        "tagList": [
+          "UuTodo",
+          "Routes",
+          "Todo"
+        ],
+        "docCode": "UuTodoRoutesTodo",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Routes.Todo />"
+      },
+      {
+        "code": "UuTodo.Bricks.ListMenu",
+        "name": "ListMenu",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "ListMenu"
+        ],
+        "docCode": "UuTodoBricksListMenu",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.ListMenu />"
+      },
+      {
+        "code": "UuTodo.Context.ListProvider",
+        "name": "ListProvider",
+        "tagList": [
+          "UuTodo",
+          "Context",
+          "ListProvider"
+        ],
+        "docCode": "UuTodoContextListProvider",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Context.ListProvider />"
+      },
+      {
+        "code": "UuTodo.Context.ItemProvider",
+        "name": "ItemProvider",
+        "tagList": [
+          "UuTodo",
+          "Context",
+          "ItemProvider"
+        ],
+        "docCode": "UuTodoContextItemProvider",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Context.ItemProvider />"
+      },
+      {
+        "code": "UuTodo.Bricks.ItemList",
+        "name": "ItemList",
+        "tagList": [
+          "UuTodo",
+          "Bricks",
+          "ItemList"
+        ],
+        "docCode": "UuTodoBricksItemList",
+        "desc": "",
+        "icon": "",
+        "imageUri": "",
+        "uuEccReady": false,
+        "template": "<UuTodo.Bricks.ItemList />"
+      }
+    ]
+  },
   "uu_todo_maing01-server": {}
 }

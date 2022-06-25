@@ -1,0 +1,16 @@
+{
+	"listId": "62a9e6990edf8927c0c24818",
+	"text": "Item with set state",
+	"visibility": true,
+	"uuIdentity": "2736-5330-1",
+	"uuIdentityName": "Kateřina Kunešová",
+	"state": "completed",
+	"awid": "22222222222222222222222222222222",
+	"sys": {
+		"cts": "2022-06-17T11:48:29.277Z",
+		"mts": "2022-06-24T07:29:45.507Z",
+		"rev": 2
+	},
+	"id": "62ac6a0d975d99306838d732",
+	"uuAppErrorMap": {}
+}

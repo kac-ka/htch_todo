@@ -230,7 +230,7 @@ class ItemAbl {
           uuAppErrorMap, 
           { 
             id: dtoIn.id,
-            currentState: tmpItem.itemList[0].state,
+            currentState: tmpItem.state,
             expectedState: "active"
           });
       }

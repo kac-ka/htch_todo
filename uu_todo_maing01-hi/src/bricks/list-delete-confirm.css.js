@@ -8,5 +8,5 @@ const footer = () => Config.Css.css`
 `;
 
 export default {
-    footer
-  };
+  footer,
+};

@@ -14,6 +14,6 @@ const listDiv = (dynamicCss) => Config.Css.css`
 `;
 
 export default {
-    listDiv,
-    bgColor
-  };
+  listDiv,
+  bgColor,
+};

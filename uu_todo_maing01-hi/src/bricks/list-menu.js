@@ -23,14 +23,14 @@ export const ListMenu = createVisualComponent({
     selectedListId: UU5.PropTypes.string,
     onClick: UU5.PropTypes.func,
     onUpdate: UU5.PropTypes.func,
-    onDelete: UU5.PropTypes.func
+    onDelete: UU5.PropTypes.func,
   },
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
   defaultProps: {
     items: [],
-    onClick: () =>{},
+    onClick: () => {},
     onDelete: () => {},
     onUpdate: () => {},
   },
@@ -46,25 +46,28 @@ export const ListMenu = createVisualComponent({
     //@@viewOn:render
     const className = Config.Css.css``;
     const attrs = UU5.Common.VisualComponent.getAttrs(props, className);
-    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(
-      props,
-      STATICS
-    );
+    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(props, STATICS);
 
     if (props.lists.length === 0) {
-      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem}/>} />;
+      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem} />} />;
     }
 
     return currentNestingLevel ? (
       <div {...attrs}>
         <UU5.Bricks.Row>
-          {props.lists.map(list => {
+          {props.lists.map((list) => {
             if (!list) return null;
-            let isListSelected = list.id === props.selectedListId
+            let isListSelected = list.id === props.selectedListId;
 
             return (
-              <UU5.Bricks.Column key = {list.id} className={Css.m0()}>
-                <List list={list} onClick={props.onClick} isActive={isListSelected} onUpdate={props.onUpdate} onDelete={props.onDelete}/>
+              <UU5.Bricks.Column key={list.id} className={Css.m0()}>
+                <List
+                  list={list}
+                  onClick={props.onClick}
+                  isActive={isListSelected}
+                  onUpdate={props.onUpdate}
+                  onDelete={props.onDelete}
+                />
               </UU5.Bricks.Column>
             );
           })}

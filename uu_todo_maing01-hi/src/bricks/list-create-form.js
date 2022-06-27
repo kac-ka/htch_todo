@@ -17,60 +17,59 @@ export const ListCreateForm = createVisualComponentWithRef({
 
   //@@viewOn:propTypes
   propTypes: {
-    onSave: UU5.PropTypes.func
+    onSave: UU5.PropTypes.func,
   },
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
   defaultProps: {
-    onSave: ()=>{}
+    onSave: () => {},
   },
   //@@viewOff:defaultProps
 
   render(props, ref) {
-
     const listRef = useRef();
     const modalRef = useRef();
     useImperativeHandle(ref, () => ({
-      open: list => {
+      open: (list) => {
         listRef.current = list;
         modalRef.current.open({
           header: renderHeader(),
           content: renderForm(list),
-          footer: renderControls()
+          footer: renderControls(),
         });
-      }
+      },
     }));
 
     //@@viewOn:private
 
-    function handleSave(opt){
-      props.onSave(opt.values)
+    function handleSave(opt) {
+      props.onSave(opt.values);
     }
     //@@viewOff:private
 
     //@@viewOn:interface
-    function validateDate(opt){
+    function validateDate(opt) {
       let result;
-      if (opt.value && new Date(opt.value) < new Date()){
+      if (opt.value && new Date(opt.value) < new Date()) {
         result = {
-          feedback: "error", 
+          feedback: "error",
           message: "Value is in the past!",
-          value: opt.value
+          value: opt.value,
         };
       } else if (opt.value) {
         result = {
-          feedback: "success", 
-          value: opt.value
+          feedback: "success",
+          value: opt.value,
         };
       } else {
         result = {
           feedback: "initial",
-          value: opt.value
+          value: opt.value,
         };
       }
       opt.component.setFeedback(result.feedback, result.message);
-      return result
+      return result;
     }
 
     function handleSave(opt) {
@@ -85,49 +84,42 @@ export const ListCreateForm = createVisualComponentWithRef({
     //@@viewOff:interface
 
     //@@viewOn:render
-    
-
-    
 
     function renderHeader() {
-      return (
-        <UU5.Forms.ContextHeader
-          content={<UU5.Bricks.Lsi lsi={Lsi.header} />}
-        />
-      );
+      return <UU5.Forms.ContextHeader content={<UU5.Bricks.Lsi lsi={Lsi.header} />} />;
     }
 
     function renderForm(list) {
       return (
         <UU5.Forms.ContextForm onSave={handleSave} onCancel={handleCancel}>
           <UU5.Forms.Text
-            label = {<UU5.Bricks.Lsi lsi = {Lsi.nameLabel} />}
-            name = "name"
-            value = {list.name}
-            inputAttrs = {{ maxLength: 255 }}
+            label={<UU5.Bricks.Lsi lsi={Lsi.nameLabel} />}
+            name="name"
+            value={list.name}
+            inputAttrs={{ maxLength: 255 }}
             // buttons={[{
             //     icon: "uu5-cross",
             //     onClick: reset()
             // }]}
-            controlled = {false}
+            controlled={false}
             required
           />
 
-          <UU5.Forms.DatePicker 
-            label = {<UU5.Bricks.Lsi lsi = {Lsi.dateLabel} />}
-            name = "deadline"
-            valueType = "iso"
-            onValidate = {validateDate}
-            value = {list.deadline}
-            controlled = {false}
+          <UU5.Forms.DatePicker
+            label={<UU5.Bricks.Lsi lsi={Lsi.dateLabel} />}
+            name="deadline"
+            valueType="iso"
+            onValidate={validateDate}
+            value={list.deadline}
+            controlled={false}
           />
 
           <UU5.Forms.TextArea
-            label={<UU5.Bricks.Lsi lsi = {Lsi.descLabel} />}
-            name = "description"
-            value = {list.description}
-            inputAttrs = {{ maxLength: 4000 }}
-            controlled = {false}
+            label={<UU5.Bricks.Lsi lsi={Lsi.descLabel} />}
+            name="description"
+            value={list.description}
+            inputAttrs={{ maxLength: 4000 }}
+            controlled={false}
             autoResize
           />
         </UU5.Forms.ContextForm>

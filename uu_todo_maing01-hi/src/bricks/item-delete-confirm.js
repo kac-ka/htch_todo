@@ -18,7 +18,7 @@ export const ItemDeleteConfirm = createVisualComponentWithRef({
 
   //@@viewOn:propTypes
   propTypes: {
-    onDelete: UU5.PropTypes.func.isRequired
+    onDelete: UU5.PropTypes.func.isRequired,
   },
   //@@viewOff:propTypes
 
@@ -29,35 +29,32 @@ export const ItemDeleteConfirm = createVisualComponentWithRef({
   //@@viewOff:defaultProps
 
   render(props, ref) {
-
     const modalRef = useRef();
     const itemRef = useRef();
 
     useImperativeHandle(ref, () => ({
-      open: item => {
+      open: (item) => {
         itemRef.current = item;
         modalRef.current.open({
-          header: <UU5.Bricks.Lsi lsi={Lsi.header}/>,
-          content: <UU5.Bricks.Lsi lsi={Lsi.content}/>,
-          footer: renderButtons()
+          header: <UU5.Bricks.Lsi lsi={Lsi.header} />,
+          content: <UU5.Bricks.Lsi lsi={Lsi.content} />,
+          footer: renderButtons(),
         });
-      }
+      },
     }));
 
     //@@viewOn:private
-    
 
     function handleCancel() {
       modalRef.current.close();
     }
 
-    function handleDelete(){
+    function handleDelete() {
       modalRef.current.close(true, () => {
         props.onDelete(itemRef.current);
       });
     }
 
-    
     //@@viewOff:private
 
     //@@viewOn:interface
@@ -65,17 +62,21 @@ export const ItemDeleteConfirm = createVisualComponentWithRef({
 
     //@@viewOn:render
 
-    function renderButtons(){
-      return(
+    function renderButtons() {
+      return (
         <UU5.Bricks.Div className={Css.footer()}>
-          <UU5.Bricks.Button onClick={handleCancel}><UU5.Bricks.Lsi lsi={Lsi.no}/></UU5.Bricks.Button>
-          <UU5.Bricks.Button colorSchema="danger" onClick={handleDelete}><UU5.Bricks.Lsi lsi={Lsi.yes}/></UU5.Bricks.Button>
+          <UU5.Bricks.Button onClick={handleCancel}>
+            <UU5.Bricks.Lsi lsi={Lsi.no} />
+          </UU5.Bricks.Button>
+          <UU5.Bricks.Button colorSchema="danger" onClick={handleDelete}>
+            <UU5.Bricks.Lsi lsi={Lsi.yes} />
+          </UU5.Bricks.Button>
         </UU5.Bricks.Div>
       );
     }
-    return <UU5.Bricks.Modal ref_={modalRef}/>
+    return <UU5.Bricks.Modal ref_={modalRef} />;
     //@@viewOff:render
-  }
+  },
 });
 
 export default ItemDeleteConfirm;

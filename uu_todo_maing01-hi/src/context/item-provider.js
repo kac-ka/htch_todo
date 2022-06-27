@@ -24,40 +24,40 @@ export const ItemProvider = createComponent({
   defaultProps: {},
   //@@viewOff:defaultProps
 
-  render({children}) {
+  render({ children }) {
     //@@viewOn:private
     let itemListResult = useDataList({
-      pageSize: 20, 
+      pageSize: 20,
       handlerMap: {
         load: (dtoIn) => Calls.listItem(dtoIn),
         createItem: (dtoIn) => Calls.createItem(dtoIn),
         deleteItem: (dtoIn) => Calls.deleteItem(dtoIn),
         setFinalStateItem: (dtoIn) => Calls.setFinalStateItem(dtoIn),
         updateItem: (dtoIn) => Calls.updateItem(dtoIn),
-        listItem: (dtoIn) => Calls.listItem(dtoIn)
+        listItem: (dtoIn) => Calls.listItem(dtoIn),
         // load: Calls.getItem,
         // createItem: Calls.createItem,
         // deleteItem: Calls.deleteItem,
         // setFinalStateItem: Calls.setFinalStateItem,
-        // updateItem: Calls.updateItem        
+        // updateItem: Calls.updateItem
       },
-   });
+    });
 
-   let {state, data, newData, errorData, pendingData, handlerMap} = itemListResult;
+    let { state, data, newData, errorData, pendingData, handlerMap } = itemListResult;
     //@@viewOff:private
 
     //@@viewOn:interface
     //@@viewOff:interface
 
     //@@viewOn:render
-  
+
     return children({
       state,
       data,
       newData,
       errorData,
       pendingData,
-      handlerMap
+      handlerMap,
     });
     //@@viewOff:render
   },

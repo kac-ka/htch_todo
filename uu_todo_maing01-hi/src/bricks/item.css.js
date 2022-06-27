@@ -28,10 +28,9 @@ const stateCheck = () => Config.Css.css`
  margin-top: 0;
 `;
 
-
 export default {
-    itemDiv,
-    item,
-    itemText,
-    stateCheck
-  };
+  itemDiv,
+  item,
+  itemText,
+  stateCheck,
+};

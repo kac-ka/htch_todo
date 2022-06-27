@@ -37,7 +37,7 @@ export const Todo = createVisualComponent({
     const createListRef = useRef();
     const deleteListRef = useRef();
     const updateListRef = useRef();
-    const listListRef = useRef();  
+    const listListRef = useRef();
 
     const createItemRef = useRef();
     const deleteItemRef = useRef();
@@ -46,9 +46,9 @@ export const Todo = createVisualComponent({
     const updateItemRef = useRef();
     const listItemRef = useRef();
 
-    const[selectedListId, setSelectedIdList] = useState();
-    const[itemList, setItemList] = useState(null);
-    const[listList, setListList] = useState(null);
+    const [selectedListId, setSelectedIdList] = useState();
+    const [itemList, setItemList] = useState(null);
+    const [listList, setListList] = useState(null);
 
     const createModalRef = useRef();
     const listDeleteConfirmRef = useRef();
@@ -62,49 +62,47 @@ export const Todo = createVisualComponent({
         .getAlertBus()
         .addAlert({
           content: <UU5.Bricks.Lsi lsi={lsi} params={params} />,
-          colorSchema: "red"
+          colorSchema: "red",
         });
     }
 
-    function showErrorByCode(code, params){
-      switch(code){
+    function showErrorByCode(code, params) {
+      switch (code) {
         case "uu-todo-main/list/delete/listContainsActiveItems":
-          showError(Lsi.noDeleteWithActiveItems, [params])
+          showError(Lsi.noDeleteWithActiveItems, [params]);
           break;
         case "uu-todo-main/item/setFinalState/itemIsNotInProperState":
-          showError(Lsi.itemBadState, [params])
+          showError(Lsi.itemBadState, [params]);
       }
-
     }
 
-    async function handleListItem(item){
+    async function handleListItem(item) {
       setSelectedIdList(item.id);
-      let data = await listItemRef.current({listId: item.id});
-      if (data.itemList.length > 0){
+      let data = await listItemRef.current({ listId: item.id });
+      if (data.itemList.length > 0) {
         setItemList(data.itemList);
       } else {
         setItemList([]);
       }
     }
 
-    async function handleListCreate(list){
+    async function handleListCreate(list) {
       let tmpList = {};
       tmpList.name = list.name;
-      if(list.deadline){
+      if (list.deadline) {
         tmpList.deadline = list.deadline;
       }
-      if(list.description){
+      if (list.description) {
         tmpList.description = list.description;
       }
       let newItem = {};
       try {
-        newItem = await createListRef.current(tmpList)
+        newItem = await createListRef.current(tmpList);
 
-        if (listList !== null && newItem.id !== undefined){
+        if (listList !== null && newItem.id !== undefined) {
           setListList([newItem, ...listList]);
-        }
-        else if (newItem.id !== undefined){
-          setListList([{newItem}]);
+        } else if (newItem.id !== undefined) {
+          setListList([{ newItem }]);
         }
       } catch (error) {
         console.log(error);
@@ -112,31 +110,31 @@ export const Todo = createVisualComponent({
       }
     }
 
-    async function handleListUpdate(list){
+    async function handleListUpdate(list) {
       let newItem = {};
       try {
-        newItem = await updateListRef.current(list)
-        if (listList !== null && newItem.id !== undefined){
-          setListList([newItem, ...listList.filter(l => l.id !== list.id)]);
-        } 
+        newItem = await updateListRef.current(list);
+        if (listList !== null && newItem.id !== undefined) {
+          setListList([newItem, ...listList.filter((l) => l.id !== list.id)]);
+        }
       } catch (error) {
         console.log(error);
         showError(Lsi.updateListFailed, [list.oldName]);
       }
     }
 
-    async function handleListDelete(list, forceDelete){
+    async function handleListDelete(list, forceDelete) {
       try {
-        await deleteListRef.current({id: list.id, forceDelete: forceDelete})
-        if (listList !== null){
-          setListList([ ...listList.filter(l => l.id !== list.id)]);
+        await deleteListRef.current({ id: list.id, forceDelete: forceDelete });
+        if (listList !== null) {
+          setListList([...listList.filter((l) => l.id !== list.id)]);
         }
       } catch (error) {
-        showErrorByCode(error.code, list.name)
-      }      
+        showErrorByCode(error.code, list.name);
+      }
     }
 
-    async function handleItemCreate(item){
+    async function handleItemCreate(item) {
       let newItem = {};
       try {
         newItem = await createItemRef.current(item);
@@ -144,57 +142,56 @@ export const Todo = createVisualComponent({
         showError(Lsi.createFailed, [item.text]);
       }
 
-      if (itemList !== null && newItem.id !== undefined){
+      if (itemList !== null && newItem.id !== undefined) {
         setItemList([newItem, ...itemList]);
-      }
-      else if (newItem.id !== undefined){
-        setItemList([{newItem}]);
+      } else if (newItem.id !== undefined) {
+        setItemList([{ newItem }]);
       }
     }
 
-    async function handleItemUpdate(item){
-      let newItem ={};
+    async function handleItemUpdate(item) {
+      let newItem = {};
       try {
         newItem = await updateItemRef.current(item);
       } catch (error) {
         showError(Lsi.updateFailed, [item.oldText]);
       }
 
-      if (itemList !== null && newItem.id !== undefined){
-        setItemList([newItem, ...itemList.filter(i => i.id !== item.id)]);
+      if (itemList !== null && newItem.id !== undefined) {
+        setItemList([newItem, ...itemList.filter((i) => i.id !== item.id)]);
       }
     }
 
-    async function handleItemDelete(item){
+    async function handleItemDelete(item) {
       try {
-        await deleteItemRef.current({id: item.id});
+        await deleteItemRef.current({ id: item.id });
       } catch (error) {
         showError(Lsi.deleteFailed, [item.text]);
       }
 
-      if (itemList !== null){
-        setItemList([...itemList.filter(i => i.id !== item.id)]);
+      if (itemList !== null) {
+        setItemList([...itemList.filter((i) => i.id !== item.id)]);
       }
     }
 
-    async function handleItemSetState(item){
-      let newItem ={};
+    async function handleItemSetState(item) {
+      let newItem = {};
       try {
         newItem = await setFinalStateItemRef.current(item);
       } catch (error) {
-        showErrorByCode(error.code, item.text)
+        showErrorByCode(error.code, item.text);
       }
 
-      if (itemList !== null && newItem.id !== undefined){
-        setItemList([newItem, ...itemList.filter(i => i.id !== item.id)]);
+      if (itemList !== null && newItem.id !== undefined) {
+        setItemList([newItem, ...itemList.filter((i) => i.id !== item.id)]);
       }
     }
 
-    function openDeleteListConfirm(list){
+    function openDeleteListConfirm(list) {
       listDeleteConfirmRef.current.open(list);
     }
 
-    function openDeleteItemConfirm(item){
+    function openDeleteItemConfirm(item) {
       itemDeleteConfirmRef.current.open(item);
     }
     //@@viewOff:private
@@ -209,38 +206,57 @@ export const Todo = createVisualComponent({
     }
 
     function renderReadyList(lists) {
-
-      if (selectedListId === undefined){
+      if (selectedListId === undefined) {
         let firstListId = lists[0].id;
         setSelectedIdList(firstListId);
       }
-      
-      if (listList === null){
-        setListList(lists)
+
+      if (listList === null) {
+        setListList(lists);
       }
 
       return (
         <>
-        <UU5.Bricks.Column className={Css.listListColumn()} colWidth={{xs: 4}}>
-          <ListMenu lists={lists} onClick={handleListItem} onUpdate={handleListUpdate} onDelete={openDeleteListConfirm} selectedListId={selectedListId} />
-          <hr className = {Css.hr()}/>
-          <UU5.Bricks.Button className={Css.createButton()} onClick={OpenCreateModal} bgStyle = "transparent" colorSchema = "blue" size="l" displayBlock><UU5.Bricks.Icon icon="uu5-plus"/><UU5.Bricks.Lsi lsi = {{ en: "Add list", cs: "Přidat list" }} /></UU5.Bricks.Button>
-        </UU5.Bricks.Column>
-        <ListCreateForm ref={createModalRef} onSave={handleListCreate}/>
-        <ListDeleteConfirm ref={listDeleteConfirmRef} onDelete={handleListDelete}/>
+          <UU5.Bricks.Column className={Css.listListColumn()} colWidth={{ xs: 4 }}>
+            <ListMenu
+              lists={lists}
+              onClick={handleListItem}
+              onUpdate={handleListUpdate}
+              onDelete={openDeleteListConfirm}
+              selectedListId={selectedListId}
+            />
+            <hr className={Css.hr()} />
+            <UU5.Bricks.Button
+              className={Css.createButton()}
+              onClick={OpenCreateModal}
+              bgStyle="transparent"
+              colorSchema="blue"
+              size="l"
+              displayBlock
+            >
+              <UU5.Bricks.Icon icon="uu5-plus" />
+              <UU5.Bricks.Lsi lsi={{ en: "Add list", cs: "Přidat list" }} />
+            </UU5.Bricks.Button>
+          </UU5.Bricks.Column>
+          <ListCreateForm ref={createModalRef} onSave={handleListCreate} />
+          <ListDeleteConfirm ref={listDeleteConfirmRef} onDelete={handleListDelete} />
         </>
       );
     }
 
     function renderReadyItem(items) {
-
       return (
         <>
-          <UU5.Bricks.Column className={Css.itemListColumn()} colWidth={{xs: 8}}>
-            <ItemCreate className={Css.itemCreate()} onCreate={handleItemCreate} selectedListId={selectedListId}/>
-            <ItemList items={items} onUpdate={handleItemUpdate} onDelete={openDeleteItemConfirm} onSetState={handleItemSetState}/>
+          <UU5.Bricks.Column className={Css.itemListColumn()} colWidth={{ xs: 8 }}>
+            <ItemCreate className={Css.itemCreate()} onCreate={handleItemCreate} selectedListId={selectedListId} />
+            <ItemList
+              items={items}
+              onUpdate={handleItemUpdate}
+              onDelete={openDeleteItemConfirm}
+              onSetState={handleItemSetState}
+            />
           </UU5.Bricks.Column>
-          <ItemDeleteConfirm ref={itemDeleteConfirmRef} onDelete={handleItemDelete}/>
+          <ItemDeleteConfirm ref={itemDeleteConfirmRef} onDelete={handleItemDelete} />
         </>
       );
     }
@@ -254,16 +270,13 @@ export const Todo = createVisualComponent({
       }
     }
 
-    function OpenCreateModal(item){
+    function OpenCreateModal(item) {
       createModalRef.current.open(item);
     }
 
     const className = Config.Css.css``;
     const attrs = UU5.Common.VisualComponent.getAttrs(props, className);
-    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(
-      props,
-      STATICS
-    );
+    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(props, STATICS);
 
     return currentNestingLevel ? (
       <div {...attrs} className={Css.h100p()}>
@@ -275,7 +288,7 @@ export const Todo = createVisualComponent({
               updateListRef.current = handlerMap.updateList;
               listListRef.current = handlerMap.listList;
 
-              const dataToRender = data && data.filter(d => d !== undefined);
+              const dataToRender = data && data.filter((d) => d !== undefined);
 
               switch (state) {
                 case "pending":
@@ -288,11 +301,11 @@ export const Todo = createVisualComponent({
                 case "ready":
                 case "readyNoData":
                 default:
-                  return renderReadyList(listList === null ? dataToRender.map(d => d.data) : listList);
+                  return renderReadyList(listList === null ? dataToRender.map((d) => d.data) : listList);
               }
             }}
           </ListProvider>
-          
+
           <ItemProvider>
             {({ state, data, newData, errorData, pendingData, handlerMap }) => {
               createItemRef.current = handlerMap.createItem;
@@ -301,8 +314,8 @@ export const Todo = createVisualComponent({
               setFinalStateItemRef.current = handlerMap.setFinalStateItem;
               updateItemRef.current = handlerMap.updateItem;
               listItemRef.current = handlerMap.listItem;
-              
-              const dataToRender = data && data.filter(d => d !== undefined);
+
+              const dataToRender = data && data.filter((d) => d !== undefined);
 
               switch (state) {
                 case "pending":
@@ -315,7 +328,7 @@ export const Todo = createVisualComponent({
                 case "ready":
                 case "readyNoData":
                 default:
-                  return renderReadyItem(itemList === null ? dataToRender.map(d => d.data) : itemList);
+                  return renderReadyItem(itemList === null ? dataToRender.map((d) => d.data) : itemList);
               }
             }}
           </ItemProvider>

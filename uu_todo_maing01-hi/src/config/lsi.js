@@ -48,14 +48,14 @@ const Lsi = {
         en: "No tasks!",
       },
     },
-    item:{
-      textPlaceholder:{
+    item: {
+      textPlaceholder: {
         cs: "Napište nový úkol",
         en: "Insert new task",
       },
     },
-    list:{
-      textPlaceholder:{
+    list: {
+      textPlaceholder: {
         cs: "Napište nový název seznam",
         en: "Insert new list name",
       },

@@ -24,10 +24,10 @@ export const ListProvider = createComponent({
   defaultProps: {},
   //@@viewOff:defaultProps
 
-  render({children}) {
+  render({ children }) {
     //@@viewOn:private
     const itemListResult = useDataList({
-      pageSize: 5, 
+      pageSize: 5,
       handlerMap: {
         load: (dtoIn) => Calls.listList(dtoIn),
         createList: (dtoIn) => Calls.createList(dtoIn),
@@ -38,23 +38,23 @@ export const ListProvider = createComponent({
         // updateList: Calls.updateList,
         // deleteList: Calls.deleteList
       },
-   });
+    });
 
-   let {state, data, newData, errorData, pendingData, handlerMap} = itemListResult;
+    let { state, data, newData, errorData, pendingData, handlerMap } = itemListResult;
     //@@viewOff:private
 
     //@@viewOn:interface
     //@@viewOff:interface
 
     //@@viewOn:render
-    
+
     return children({
       state,
       data,
       newData,
       errorData,
       pendingData,
-      handlerMap
+      handlerMap,
     });
     //<ListDataContext.Provider>{children}</ListDataContext.Provider>
 

@@ -15,8 +15,8 @@ const STATICS = {
 
 const Mode = {
   READ: "READ",
-  EDIT: "EDIT"
-}
+  EDIT: "EDIT",
+};
 
 export const List = createVisualComponent({
   ...STATICS,
@@ -27,12 +27,12 @@ export const List = createVisualComponent({
       id: UU5.PropTypes.string.isRequired,
       name: UU5.PropTypes.string.isRequired,
       description: UU5.PropTypes.string,
-      deadline: UU5.PropTypes.string      
+      deadline: UU5.PropTypes.string,
     }),
     onClick: UU5.PropTypes.func,
     onUpdate: UU5.PropTypes.func,
     onDelete: UU5.PropTypes.func,
-    isActive: UU5.PropTypes.bool
+    isActive: UU5.PropTypes.bool,
   },
   //@@viewOff:propTypes
 
@@ -42,37 +42,36 @@ export const List = createVisualComponent({
     onClick: () => {},
     onUpdate: () => {},
     onDelete: () => {},
-    isActive: false
+    isActive: false,
   },
   //@@viewOff:defaultProps
 
   render(props) {
-
     const [mode, setMode] = useState(Mode.READ);
 
     //@@viewOn:private
-    function handleClick(){
-      props.onClick(props.list)
+    function handleClick() {
+      props.onClick(props.list);
     }
 
-    function handleUpdate(listName){
-      props.onUpdate({id: props.list.id, name: listName.value, oldName: props.list.name});
+    function handleUpdate(listName) {
+      props.onUpdate({ id: props.list.id, name: listName.value, oldName: props.list.name });
       setMode(Mode.READ);
     }
 
-    function handleDelete(listName){
-      props.onDelete({id: props.list.id, name: listName.value});
+    function handleDelete(listName) {
+      props.onDelete({ id: props.list.id, name: listName.value });
       setMode(Mode.READ);
     }
 
-    function handleEditClick(){
+    function handleEditClick() {
       setMode(Mode.EDIT);
     }
 
-    const dynamicCss ={
+    const dynamicCss = {
       bgcolor: props.isActive ? "#2196F3" : "white",
-      color: props.isActive ? "white" : "black"
-    }
+      color: props.isActive ? "white" : "black",
+    };
     //@@viewOff:private
 
     //@@viewOn:interface
@@ -81,37 +80,41 @@ export const List = createVisualComponent({
     //@@viewOn:render
     const className = Config.Css.css``;
     const attrs = UU5.Common.VisualComponent.getAttrs(props, className);
-    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(
-      props,
-      STATICS
-    );
+    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(props, STATICS);
 
-    function renderList(){
-      if (mode == Mode.READ){
+    function renderList() {
+      if (mode == Mode.READ) {
         return (
           <div onClick={handleClick} className={Css.listDiv(dynamicCss)}>
             <div>{props.list.name}</div>
             <div>
-              <UU5.Bricks.Button onClick={handleEditClick} bgStyle = "transparent" colorSchema = "white"><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Button>
+              <UU5.Bricks.Button onClick={handleEditClick} bgStyle="transparent" colorSchema="white">
+                <UU5.Bricks.Icon icon="plus4u5-pencil" />
+              </UU5.Bricks.Button>
             </div>
           </div>
         );
-      }
-      else{
+      } else {
         return (
           <div className={Css.listDiv(dynamicCss)}>
             <UU5.Forms.TextButton
-              placeholder={<UU5.Bricks.Lsi lsi={Lsi.todo.list.textPlaceholder}/>}
+              placeholder={<UU5.Bricks.Lsi lsi={Lsi.todo.list.textPlaceholder} />}
               value={props.list.name}
               name="name"
               inputAttrs={{ maxLength: 255 }}
-              buttons={[{
+              buttons={[
+                {
                   icon: "uu5-ok",
-                  onClick: (opt) => {handleUpdate(opt)}
-                },{
+                  onClick: (opt) => {
+                    handleUpdate(opt);
+                  },
+                },
+                {
                   icon: "plus4u5-trash-can",
-                  onClick: (opt) => {handleDelete(opt)}
-                }
+                  onClick: (opt) => {
+                    handleDelete(opt);
+                  },
+                },
               ]}
               required
             />
@@ -120,11 +123,7 @@ export const List = createVisualComponent({
       }
     }
 
-    return (
-      <>
-      {renderList()}
-      </>
-    );
+    return <>{renderList()}</>;
     //@@viewOff:render
   },
 });

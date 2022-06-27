@@ -26,10 +26,10 @@ const h100p = () => Config.Css.css`
 height: 100%`;
 
 export default {
-    itemListColumn,
-    hr,
-    createButton,
-    itemCreate,
-    listListColumn,
-    h100p
-  };
+  itemListColumn,
+  hr,
+  createButton,
+  itemCreate,
+  listListColumn,
+  h100p,
+};

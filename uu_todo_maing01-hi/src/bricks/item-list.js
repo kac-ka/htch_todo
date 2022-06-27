@@ -21,7 +21,7 @@ export const ItemList = createComponent({
     items: UU5.PropTypes.array.isRequired,
     onUpdate: UU5.PropTypes.func,
     onDelete: UU5.PropTypes.func,
-    onSetState: UU5.PropTypes.func
+    onSetState: UU5.PropTypes.func,
   },
   //@@viewOff:propTypes
 
@@ -30,7 +30,7 @@ export const ItemList = createComponent({
     items: [],
     onUpdate: () => {},
     onDelete: () => {},
-    onSetState: () => {}
+    onSetState: () => {},
   },
   //@@viewOff:defaultProps
 
@@ -44,23 +44,19 @@ export const ItemList = createComponent({
     //@@viewOn:render
     const className = Config.Css.css``;
     const attrs = UU5.Common.VisualComponent.getAttrs(props, className);
-    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(
-      props,
-      STATICS
-    );
+    const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(props, STATICS);
 
     if (props.items.length === 0) {
-      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem}/>} />;
+      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem} />} />;
     }
 
     return currentNestingLevel ? (
       <div {...attrs}>
         <Uu5Tiles.ControllerProvider data={props.items}>
           <Uu5Tiles.Grid tileHeight={"auto"} rowSpacing={5} height={"100%"} passAllTileProps>
-            <Item onDelete={props.onDelete} onUpdate={props.onUpdate} onSetState={props.onSetState}/>
+            <Item onDelete={props.onDelete} onUpdate={props.onUpdate} onSetState={props.onSetState} />
           </Uu5Tiles.Grid>
         </Uu5Tiles.ControllerProvider>
-
       </div>
     ) : null;
     //@@viewOff:render

@@ -267,7 +267,13 @@ export const Todo = createVisualComponent({
         case "load":
         case "loadNext":
         default:
-          return <UU5.Bricks.Error content={<UU5.Bricks.Lsi lsi={ConLsi.todo.errorHappend} />} error={errorData.error} errorData={errorData.data} />;
+          return (
+            <UU5.Bricks.Error
+              content={<UU5.Bricks.Lsi lsi={ConLsi.todo.errorHappend} />}
+              error={errorData.error}
+              errorData={errorData.data}
+            />
+          );
       }
     }
 

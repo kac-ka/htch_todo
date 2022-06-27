@@ -1,7 +1,7 @@
 const Lsi = {
     text: {
         en: "Insert your new task here",
-        cs: "Napiš sem nový úkol"
+        cs: "Sem napiš nový úkol"
       },
 };
 

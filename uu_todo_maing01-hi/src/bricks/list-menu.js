@@ -3,6 +3,8 @@ import UU5 from "uu5g04";
 import { createVisualComponent } from "uu5g04-hooks";
 import Config from "./config/config";
 import List from "./list";
+import Lsi from "../config/lsi";
+import Css from "./list-menu.css";
 //@@viewOff:imports
 
 const STATICS = {
@@ -18,14 +20,19 @@ export const ListMenu = createVisualComponent({
   //@@viewOn:propTypes
   propTypes: {
     items: UU5.PropTypes.array.isRequired,
-    onClick: UU5.PropTypes.func
+    selectedListId: UU5.PropTypes.string,
+    onClick: UU5.PropTypes.func,
+    onUpdate: UU5.PropTypes.func,
+    onDelete: UU5.PropTypes.func
   },
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
   defaultProps: {
     items: [],
-    onClick: () =>{}
+    onClick: () =>{},
+    onDelete: () => {},
+    onUpdate: () => {},
   },
   //@@viewOff:defaultProps
 
@@ -45,7 +52,7 @@ export const ListMenu = createVisualComponent({
     );
 
     if (props.lists.length === 0) {
-      return <UU5.Common.Error content="No list!" />;
+      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem}/>} />;
     }
 
     return currentNestingLevel ? (
@@ -53,10 +60,11 @@ export const ListMenu = createVisualComponent({
         <UU5.Bricks.Row>
           {props.lists.map(list => {
             if (!list) return null;
+            let isListSelected = list.id === props.selectedListId
 
             return (
-              <UU5.Bricks.Column key = {list.data.id}>
-                <List list={list.data} onClick={props.onClick}/>
+              <UU5.Bricks.Column key = {list.id} className={Css.m0()}>
+                <List list={list} onClick={props.onClick} isActive={isListSelected} onUpdate={props.onUpdate} onDelete={props.onDelete}/>
               </UU5.Bricks.Column>
             );
           })}

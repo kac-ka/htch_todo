@@ -1,8 +1,9 @@
 //@@viewOn:imports
 import UU5 from "uu5g04";
-import { createVisualComponent } from "uu5g04-hooks";
+import { createVisualComponent, useState } from "uu5g04-hooks";
 import Config from "./config/config";
 import ItemProvider from "../context/item-provider";
+import Css from "./list.css";
 //@@viewOff:imports
 
 const STATICS = {
@@ -11,6 +12,11 @@ const STATICS = {
   nestingLevel: "bigBoxCollection",
   //@@viewOff:statics
 };
+
+const Mode = {
+  READ: "READ",
+  EDIT: "EDIT"
+}
 
 export const List = createVisualComponent({
   ...STATICS,
@@ -21,23 +27,51 @@ export const List = createVisualComponent({
       id: UU5.PropTypes.string.isRequired,
       name: UU5.PropTypes.string.isRequired,
       description: UU5.PropTypes.string,
-      deadline: UU5.PropTypes.string
+      deadline: UU5.PropTypes.string      
     }),
-    onClick: UU5.PropTypes.func
+    onClick: UU5.PropTypes.func,
+    onUpdate: UU5.PropTypes.func,
+    onDelete: UU5.PropTypes.func,
+    isActive: UU5.PropTypes.bool
   },
   //@@viewOff:propTypes
 
   //@@viewOn:defaultProps
   defaultProps: {
     list: null,
-    onClick: () => {}
+    onClick: () => {},
+    onUpdate: () => {},
+    onDelete: () => {},
+    isActive: false
   },
   //@@viewOff:defaultProps
 
   render(props) {
+
+    const [mode, setMode] = useState(Mode.READ);
+
     //@@viewOn:private
     function handleClick(){
       props.onClick(props.list)
+    }
+
+    function handleUpdate(listName){
+      props.onUpdate({id: props.list.id, name: listName.value, oldName: props.list.name});
+      setMode(Mode.READ);
+    }
+
+    function handleDelete(listName){
+      props.onDelete({id: props.list.id, name: listName.value});
+      setMode(Mode.READ);
+    }
+
+    function handleEditClick(){
+      setMode(Mode.EDIT);
+    }
+
+    const dynamicCss ={
+      bgcolor: props.isActive ? "#2196F3" : "white",
+      color: props.isActive ? "white" : "black"
     }
     //@@viewOff:private
 
@@ -52,26 +86,45 @@ export const List = createVisualComponent({
       STATICS
     );
 
-    return currentNestingLevel ? (
-      <div {...attrs}>
-        <>
-        {/* <UU5.Bricks.Row>
-          <UU5.Bricks.Column onClick={{}} colWidth={{xs: 9}}>
-            <p>list name: {props.list.name}</p>
-          </UU5.Bricks.Column>
-          <UU5.Bricks.Column colWidth={{xs: 3}}>
-            <UU5.Bricks.Button><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Button>
-            <UU5.Bricks.Button><UU5.Bricks.Icon icon="plus4u5-trash-can"/></UU5.Bricks.Button>
-          </UU5.Bricks.Column>
-        </UU5.Bricks.Row> */}
-        <UU5.Bricks.Button onClick={handleClick} colorSchema="blue" bgStyle="transparent" displayBlock>
-          <p>list name: {props.list.name}</p>
-          <UU5.Bricks.Div><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Div>
-          <UU5.Bricks.Div><UU5.Bricks.Icon icon="plus4u5-trash-can"/></UU5.Bricks.Div>
-        </UU5.Bricks.Button>
-        </>
-      </div>
-    ) : null;
+    function renderList(){
+      if (mode == Mode.READ){
+        return (
+          <div onClick={handleClick} className={Css.listDiv(dynamicCss)}>
+            <div>{props.list.name}</div>
+            <div>
+              <UU5.Bricks.Button onClick={handleEditClick} bgStyle = "transparent" colorSchema = "white"><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Button>
+            </div>
+          </div>
+        );
+      }
+      else{
+        return (
+          <div className={Css.listDiv(dynamicCss)}>
+            <UU5.Forms.TextButton
+              placeholder={<UU5.Bricks.Lsi lsi={Lsi.todo.list.textPlaceholder}/>}
+              value={props.list.name}
+              name="name"
+              inputAttrs={{ maxLength: 255 }}
+              buttons={[{
+                  icon: "uu5-ok",
+                  onClick: (opt) => {handleUpdate(opt)}
+                },{
+                  icon: "plus4u5-trash-can",
+                  onClick: (opt) => {handleDelete(opt)}
+                }
+              ]}
+              required
+            />
+          </div>
+        );
+      }
+    }
+
+    return (
+      <>
+      {renderList()}
+      </>
+    );
     //@@viewOff:render
   },
 });

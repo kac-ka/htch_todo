@@ -4,6 +4,7 @@ import { createComponent } from "uu5g04-hooks";
 import Uu5Tiles from "uu5tilesg02";
 import Config from "./config/config";
 import Item from "./item";
+import Lsi from "../config/lsi";
 //@@viewOff:imports
 
 const STATICS = {
@@ -49,13 +50,13 @@ export const ItemList = createComponent({
     );
 
     if (props.items.length === 0) {
-      return <UU5.Common.Error content="No item!" />;
+      return <UU5.Common.Error content={<UU5.Bricks.Lsi lsi={Lsi.todo.itemList.noItem}/>} />;
     }
 
     return currentNestingLevel ? (
       <div {...attrs}>
         <Uu5Tiles.ControllerProvider data={props.items}>
-          <Uu5Tiles.Grid tileHeight={"auto"} rowSpacing={5} height={"auto"} passAllTileProps>
+          <Uu5Tiles.Grid tileHeight={"auto"} rowSpacing={5} height={"100%"} passAllTileProps>
             <Item onDelete={props.onDelete} onUpdate={props.onUpdate} onSetState={props.onSetState}/>
           </Uu5Tiles.Grid>
         </Uu5Tiles.ControllerProvider>

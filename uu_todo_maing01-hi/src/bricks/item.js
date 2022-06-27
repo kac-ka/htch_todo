@@ -5,6 +5,7 @@ import Config from "./config/config";
 import "uu5g04-forms";
 import ItemProvider from "../context/item-provider";
 import Css from "./item.css";
+import Lsi from "../config/lsi";
 //@@viewOff:imports
 
 const STATICS = {
@@ -20,9 +21,7 @@ const Mode = {
 }
 
 export const Item = createVisualComponent({
-  ...STATICS,
-
-  
+  ...STATICS,  
 
   //@@viewOn:propTypes
   propTypes: {
@@ -57,22 +56,27 @@ export const Item = createVisualComponent({
     }
 
     function handleUpdate(item) {
-      item.values.id = props.data.id;
-      props.onUpdate(item.values);
+      props.onUpdate({id: props.data.id, text: item.value, oldText: props.data.text });
       setMode(Mode.READ);
     }
 
-    function handleDelete(button) {
-      props.onDelete({id: props.data.id});
+    function handleDelete(item) {
+      props.onDelete({id: props.data.id, text: props.data.text});
       setMode(Mode.READ);
     }
 
-    function handleCancel(){
+    function handleCancel(item){
       setMode(Mode.READ);
     }
 
     function handleSetCompleted(){
-      props.onSetState({id: props.data.id, state: "completed"})
+      props.onSetState({id: props.data.id, state: "completed", text: props.data.text})
+    }
+
+    let isActive = props.data.state !== "active";
+    const dynamicCss = {
+      strike: isActive ? "line-through" : "none",
+      color: isActive ? "#888888" : "black"
     }
     //@@viewOff:private
 
@@ -93,36 +97,41 @@ export const Item = createVisualComponent({
 
     function renderItem(){
       if (mode === Mode.READ){
-        return (<UU5.Bricks.Row>
-          <UU5.Bricks.Column colWidth={{xs:9}}>
-            <UU5.Bricks.Div className={Css.itemDiv()}>
-              <UU5.Forms.Checkbox value={props.data.state !== "active"} onChange={handleSetCompleted} bgStyleChecked="filled" size="l" colorSchema="green" />
-              {props.data.text}
-            </UU5.Bricks.Div>
-          </UU5.Bricks.Column>
-          <UU5.Bricks.Column colWidth={{xs:3}}>
-            <UU5.Bricks.Button disabled={props.data.state !== "active"} onClick={handleEditClick}><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Button>
-          </UU5.Bricks.Column>
+        return (
+        <UU5.Bricks.Row className={Css.itemDiv()}>
+          <UU5.Bricks.Div className={Css.item()} >
+            <UU5.Forms.Checkbox className={Css.stateCheck()} value={props.data.state !== "active"} onChange={handleSetCompleted} bgStyleChecked="filled" size="m" colorSchema="grey" />
+            <UU5.Bricks.Div className={Css.itemText(dynamicCss)}>{props.data.text}</UU5.Bricks.Div>
+          </UU5.Bricks.Div>
+          <UU5.Bricks.Div>
+            <UU5.Bricks.Button bgStyle="transparent" disabled={props.data.state !== "active"} onClick={handleEditClick}><UU5.Bricks.Icon icon="plus4u5-pencil"/></UU5.Bricks.Button>
+          </UU5.Bricks.Div>
         </UU5.Bricks.Row>
         )
       } else {
         return(
-        <UU5.Forms.ContextSection>
-          <UU5.Forms.ContextForm onSave={handleUpdate} onCancel={handleCancel}>
             <UU5.Bricks.Row>
-              <UU5.Bricks.Column colWidth={{xs: 9}}>
-                <UU5.Forms.Text placeholder="insert new item text" value={props.data.text} name="text" inputAttrs={{ maxLength: 255 }} required  />
-              </UU5.Bricks.Column>
-              <UU5.Bricks.Column colWidth={{xs: 3}}>
-                <UU5.Forms.ContextControls align = "left"
-                  buttonCancelProps={{ content: <UU5.Bricks.Icon icon="uu5-cross" />, size: "s"}}
-                  buttonSubmitProps={{ content: <UU5.Bricks.Icon icon="uu5-ok" />, size: "s"}}
+              <UU5.Bricks.Column colWidth={{xs: 12}}>
+                <UU5.Forms.TextButton
+                  placeholder={<UU5.Bricks.Lsi lsi={Lsi.todo.item.textPlaceholder}/>}
+                  value={props.data.text}
+                  name="text"
+                  inputAttrs={{ maxLength: 255 }}
+                  buttons={[{
+                      icon: "uu5-cross",
+                      onClick: (opt) => {handleCancel(opt)}
+                    },{
+                      icon: "uu5-ok",
+                      onClick: (opt) => {handleUpdate(opt)}
+                    },{
+                      icon: "plus4u5-trash-can",
+                      onClick: (opt) => {handleDelete(opt)}
+                    }
+                  ]}
+                  required
                 />
-                <UU5.Bricks.Button onClick={handleDelete}><UU5.Bricks.Icon icon="plus4u5-trash-can"/></UU5.Bricks.Button>
               </UU5.Bricks.Column>
             </UU5.Bricks.Row>
-          </UU5.Forms.ContextForm>
-        </UU5.Forms.ContextSection>
         )
       }
     }

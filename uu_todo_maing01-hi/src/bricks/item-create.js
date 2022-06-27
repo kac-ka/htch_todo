@@ -33,8 +33,7 @@ export const ItemCreate = createVisualComponent({
 
     //@@viewOn:private
     function handleSave(item){
-      item.values.listId = props.selectedListId
-      props.onCreate(item.values);
+      props.onCreate({listId: props.selectedListId, text: item.value});
     }
 
     //@@viewOff:private
@@ -55,13 +54,17 @@ export const ItemCreate = createVisualComponent({
         <UU5.Forms.ContextSection>
           <UU5.Forms.ContextForm onSave={handleSave}>
             <UU5.Bricks.Row>
-              <UU5.Bricks.Column colWidth={{xs: 10}}>
-                <UU5.Forms.Text placeholder={Lsi.text} name="text" inputAttrs={{ maxLength: 255 }} required  />
-              </UU5.Bricks.Column>
-              <UU5.Bricks.Column colWidth={{xs: 2}}>
-                <UU5.Forms.ContextControls align = "left"
-                  buttonCancelProps={{ content: <UU5.Bricks.Icon icon="uu5-cross" />, size: "s"}}
-                  buttonSubmitProps={{ content: <UU5.Bricks.Icon icon="uu5-ok" />, size: "s"}}
+              <UU5.Bricks.Column colWidth={{xs: 12}}>
+                <UU5.Forms.TextButton
+                  placeholder={Lsi.text}
+                  name="text"
+                  inputAttrs={{ maxLength: 255 }}
+                  required
+                  buttons={[{
+                    icon: "uu5-ok",
+                    onClick: (opt) => {handleSave(opt)}
+                    }
+                  ]}
                 />
               </UU5.Bricks.Column>
             </UU5.Bricks.Row>

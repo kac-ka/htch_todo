@@ -41,6 +41,33 @@ const Lsi = {
     },
   },
 
+  todo: {
+    itemList: {
+      noItem: {
+        cs: "Žádné úkoly!",
+        en: "No tasks!",
+      },
+    },
+    item:{
+      textPlaceholder:{
+        cs: "Napište nový úkol",
+        en: "Insert new task",
+      },
+    },
+    list:{
+      textPlaceholder:{
+        cs: "Napište nový název seznam",
+        en: "Insert new list name",
+      },
+    },
+    listMenu: {
+      noItem: {
+        cs: "Žádné seznamy!",
+        en: "No Lists!",
+      },
+    },
+  },
+
   auth: {
     welcome: {
       cs: "Vítejte",

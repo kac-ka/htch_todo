@@ -39,7 +39,7 @@ let Calls = {
     return await Calls.getWorkspace();
   },
 
-  creteList(dtoIn) {
+  createList(dtoIn) {
     let commandUri = Calls.getCommandUri("list/create");
     return Calls.call("post", commandUri, dtoIn);
   },

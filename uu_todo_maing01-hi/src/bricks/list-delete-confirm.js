@@ -2,7 +2,6 @@
 import UU5 from "uu5g04";
 import { createVisualComponentWithRef, useRef, useImperativeHandle } from "uu5g04-hooks";
 import Config from "./config/config";
-import ListCreateForm from "./list-create-form";
 import Lsi from "./list-delete-confirm.lsi";
 import Css from "./list-delete-confirm.css";
 //@@viewOff:imports
@@ -63,10 +62,7 @@ export const ListDeleteConfirm = createVisualComponentWithRef({
 
     //@@viewOn:render
 
-    function renderContent(list) {
-      <p></p>;
-    }
-
+   
     function renderButtons() {
       return (
         <UU5.Bricks.Div className={Css.footer()}>

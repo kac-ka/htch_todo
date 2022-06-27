@@ -53,6 +53,10 @@ const Lsi = {
         cs: "Napište nový úkol",
         en: "Insert new task",
       },
+      noData: {
+        cs: "Žádná data",
+        en: "No data",
+      },
     },
     list: {
       textPlaceholder: {
@@ -65,6 +69,14 @@ const Lsi = {
         cs: "Žádné seznamy!",
         en: "No Lists!",
       },
+    },
+    addList: {
+      cs: "Přidat list",
+      en: "Add list",
+    },
+    errorHappend: {
+      cs: "Nastala chyba!",
+      en: "Error happened!",
     },
   },
 

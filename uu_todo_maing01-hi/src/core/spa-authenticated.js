@@ -10,6 +10,7 @@ import Left from "./left";
 import Bottom from "./bottom";
 import Home from "../routes/home";
 import Todo from "../routes/todo";
+import Css from "./spa-authenticated.css";
 //@@viewOff:imports
 
 const STATICS = {
@@ -57,6 +58,7 @@ export const SpaAuthenticated = createVisualComponent({
       <Plus4U5.App.MenuProvider activeItemId={initialActiveItemId}>
         <Plus4U5.App.Page
           {...props}
+          className={Css.page()}
           top={<Plus4U5.App.TopBt />}
           topFixed="smart"
           bottom={<Bottom />}

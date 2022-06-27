@@ -54,7 +54,7 @@ export const ListCreateForm = createVisualComponentWithRef({
       if (opt.value && new Date(opt.value) < new Date()) {
         result = {
           feedback: "error",
-          message: "Value is in the past!",
+          message: <UU5.Bricks.Lsi lsi={Lsi.dateError} />,
           value: opt.value,
         };
       } else if (opt.value) {
@@ -97,10 +97,6 @@ export const ListCreateForm = createVisualComponentWithRef({
             name="name"
             value={list.name}
             inputAttrs={{ maxLength: 255 }}
-            // buttons={[{
-            //     icon: "uu5-cross",
-            //     onClick: reset()
-            // }]}
             controlled={false}
             required
           />

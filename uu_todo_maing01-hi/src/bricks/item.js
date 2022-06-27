@@ -3,7 +3,6 @@ import UU5 from "uu5g04";
 import { createVisualComponent, useRef, useState } from "uu5g04-hooks";
 import Config from "./config/config";
 import "uu5g04-forms";
-import ItemProvider from "../context/item-provider";
 import Css from "./item.css";
 import Lsi from "../config/lsi";
 //@@viewOff:imports
@@ -88,7 +87,7 @@ export const Item = createVisualComponent({
     const currentNestingLevel = UU5.Utils.NestingLevel.getNestingLevel(props, STATICS);
 
     if (!props.data) {
-      return "no data";
+      return <UU5.Bricks.Lsi lsi={Lsi.todo.item.noData} />;
     }
 
     function renderItem() {

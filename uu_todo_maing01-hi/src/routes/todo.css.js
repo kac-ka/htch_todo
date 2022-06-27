@@ -3,6 +3,7 @@ import Config from "./config/config";
 const itemListColumn = () => Config.Css.css`
   height: 100%;
   padding: 0 20px;
+  background-color: #01294A;
 `;
 
 const listListColumn = () => Config.Css.css`

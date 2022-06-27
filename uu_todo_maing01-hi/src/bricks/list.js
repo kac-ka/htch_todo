@@ -2,8 +2,8 @@
 import UU5 from "uu5g04";
 import { createVisualComponent, useState } from "uu5g04-hooks";
 import Config from "./config/config";
-import ItemProvider from "../context/item-provider";
 import Css from "./list.css";
+import Lsi from "../config/lsi";
 //@@viewOff:imports
 
 const STATICS = {

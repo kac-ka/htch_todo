@@ -33,10 +33,6 @@ export const ListProvider = createComponent({
         createList: (dtoIn) => Calls.createList(dtoIn),
         deleteList: (dtoIn) => Calls.deleteList(dtoIn),
         updateList: (dtoIn) => Calls.updateList(dtoIn),
-        // load: Calls.listItem,
-        // createList: Calls.createList,
-        // updateList: Calls.updateList,
-        // deleteList: Calls.deleteList
       },
     });
 

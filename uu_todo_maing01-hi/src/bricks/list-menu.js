@@ -60,7 +60,7 @@ export const ListMenu = createVisualComponent({
             let isListSelected = list.id === props.selectedListId;
 
             return (
-              <UU5.Bricks.Column key={list.id} className={Css.m0()}>
+              <UU5.Bricks.Column key={list.id} className={Css.p0()}>
                 <List
                   list={list}
                   onClick={props.onClick}

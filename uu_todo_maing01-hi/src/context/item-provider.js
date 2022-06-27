@@ -35,11 +35,6 @@ export const ItemProvider = createComponent({
         setFinalStateItem: (dtoIn) => Calls.setFinalStateItem(dtoIn),
         updateItem: (dtoIn) => Calls.updateItem(dtoIn),
         listItem: (dtoIn) => Calls.listItem(dtoIn),
-        // load: Calls.getItem,
-        // createItem: Calls.createItem,
-        // deleteItem: Calls.deleteItem,
-        // setFinalStateItem: Calls.setFinalStateItem,
-        // updateItem: Calls.updateItem
       },
     });
 

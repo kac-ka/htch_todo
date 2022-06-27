@@ -3,6 +3,7 @@ import UU5 from "uu5g04";
 import { createVisualComponent, useRef, useState } from "uu5g04-hooks";
 import Config from "./config/config";
 import Lsi from "./todo.lsi";
+import ConLsi from "../config/lsi";
 import Css from "./todo.css";
 import ItemProvider from "../context/item-provider";
 import ListProvider from "../context/list-provider";
@@ -217,7 +218,7 @@ export const Todo = createVisualComponent({
 
       return (
         <>
-          <UU5.Bricks.Column className={Css.listListColumn()} colWidth={{ xs: 4 }}>
+          <UU5.Bricks.Column className={Css.listListColumn()} colWidth={{ xs: 3 }}>
             <ListMenu
               lists={lists}
               onClick={handleListItem}
@@ -235,7 +236,7 @@ export const Todo = createVisualComponent({
               displayBlock
             >
               <UU5.Bricks.Icon icon="uu5-plus" />
-              <UU5.Bricks.Lsi lsi={{ en: "Add list", cs: "Přidat list" }} />
+              <UU5.Bricks.Lsi lsi={ConLsi.todo.addList} />
             </UU5.Bricks.Button>
           </UU5.Bricks.Column>
           <ListCreateForm ref={createModalRef} onSave={handleListCreate} />
@@ -247,7 +248,7 @@ export const Todo = createVisualComponent({
     function renderReadyItem(items) {
       return (
         <>
-          <UU5.Bricks.Column className={Css.itemListColumn()} colWidth={{ xs: 8 }}>
+          <UU5.Bricks.Column className={Css.itemListColumn()} colWidth={{ xs: 9 }}>
             <ItemCreate className={Css.itemCreate()} onCreate={handleItemCreate} selectedListId={selectedListId} />
             <ItemList
               items={items}
@@ -266,7 +267,7 @@ export const Todo = createVisualComponent({
         case "load":
         case "loadNext":
         default:
-          return <UU5.Bricks.Error content="Error happened!" error={errorData.error} errorData={errorData.data} />;
+          return <UU5.Bricks.Error content={<UU5.Bricks.Lsi lsi={ConLsi.todo.errorHappend} />} error={errorData.error} errorData={errorData.data} />;
       }
     }
 

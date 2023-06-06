@@ -62,7 +62,6 @@ export const ListDeleteConfirm = createVisualComponentWithRef({
 
     //@@viewOn:render
 
-   
     function renderButtons() {
       return (
         <UU5.Bricks.Div className={Css.footer()}>

@@ -43,9 +43,6 @@ export const ListCreateForm = createVisualComponentWithRef({
 
     //@@viewOn:private
 
-    function handleSave(opt) {
-      props.onSave(opt.values);
-    }
     //@@viewOff:private
 
     //@@viewOn:interface
